@@ -25,4 +25,6 @@ public class Campo {
     public boolean estaOcupada() { return ocupada; }
     public void ocupar() { ocupada = true; }
     public void liberar() { ocupada = false; }
+    
 }
+

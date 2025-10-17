@@ -2,21 +2,24 @@ package juego;
 
 
 import java.awt.Color;
-
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
+	Planta roseBlade;
+	Tanque tung;
 	private Entorno entorno;
 	private Campo[][] tablero;
     private int filas = 5;
     private int columnas = 10;
-    private double anchoCasilla = 80;
-    private double altoCasilla = 80;
-    private double margenX = 40;
-    private double margenY = 200;
+    private double anchoCasilla = 102;
+    private double altoCasilla = 102;
+    private double margenX = 51;
+    private double margenY = 151;
+    //llamamos la clase planta
+    
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -24,9 +27,15 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
+		roseBlade = new Planta(100.0, 100.0);
+		tung = new Tanque(150.0, 150.0);
+				
+		this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
 		
 		inicializarTablero();
+		
+		
+		
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
@@ -55,11 +64,52 @@ public class Juego extends InterfaceJuego
 	{
 		 entorno.colorFondo(new Color(0, 120, 0)); // Césped
 	        dibujarTablero();
+		
+		//roseblade dibujada
+		roseBlade.dibujar(entorno);
+		if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(roseBlade)) {
+			roseBlade.seleccionada = true;
+			arrastrar();
+		}else {
+			roseBlade.seleccionada = false;
+		}
+		
+		tung.dibujar(entorno);
+		if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tung)) {
+			tung.seleccionada = true;
+			arrastrarT();
+		}else {
+			tung.seleccionada = false;
+		}
+		
+		
 		// Procesamiento de un instante de tiempo
 		// ...
 	     
 		
 	}
+	private void arrastrar() {
+		roseBlade.x = entorno.mouseX();
+		roseBlade.y = entorno.mouseY();
+	}
+	
+	private void arrastrarT() {
+		tung.x = entorno.mouseX();
+		tung.y = entorno.mouseY();
+	}
+	
+	private boolean seleccionada(Planta p) {
+		double cursorX = entorno.mouseX();
+		double cursorY = entorno.mouseY();
+		return cursorX > p.getBordeIzq() && cursorX < p.getBordeDer() && cursorY > p.getBordeSup() && cursorY < p.getBordeInf();
+	}
+	
+	private boolean seleccionada(Tanque t) {
+		double cursorX = entorno.mouseX();
+		double cursorY = entorno.mouseY();
+		return cursorX > t.getBordeIzq() && cursorX < t.getBordeDer() && cursorY > t.getBordeSup() && cursorY < t.getBordeInf();
+	}
+	
 	private void dibujarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
