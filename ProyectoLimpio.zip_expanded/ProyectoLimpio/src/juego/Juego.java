@@ -8,11 +8,15 @@ import entorno.InterfaceJuego;
 public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
-	Planta roseBlade;
-	Tanque tung;
 	Planta icon;
 	Tanque iconT;
 	Regalos gift;
+	private Planta[] RoseBlade;
+	private Tanque[] Tung;
+	private int contadorTicks = 0;
+	private int roseI = 0;
+	private int tungI = 0;
+
 	private Entorno entorno;
 	private Campo[][] tablero;
     private int filas = 5;
@@ -32,13 +36,14 @@ public class Juego extends InterfaceJuego
 	{
 		// Inicializa el objeto entorno
 		
-		roseBlade = new Planta(50.0, 50.0);
-		tung = new Tanque(200.0, 50.0);
 		icon = new Planta(50.0,50.0);
 		iconT = new Tanque(200.0,50.0);
 		gift = new Regalos(100.0, 100.0, 51.0, 51.0);	
 		
 		this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
+		RoseBlade = new Planta[10];
+		Tung = new Tanque[10];
+
 	
 		
 		
@@ -55,6 +60,28 @@ public class Juego extends InterfaceJuego
 		// Inicia el juego!
 		this.entorno.iniciar();
 	}
+	private void generarPlantas() {
+	    contadorTicks++;
+
+	    // Cada 100 ticks, agregamos una nueva planta si queda lugar
+	    if (contadorTicks % 500 == 0) {
+	        if (roseI < RoseBlade.length) {
+	            // Aparecen alineadas en el HUD, por ejemplo una al lado de otra
+	            double x = 50.0;
+	            double y = 50.0;
+	            RoseBlade[roseI] = new Planta(y, x);
+	            roseI++;
+	        }
+
+	        if (tungI < Tung.length) {
+	            double x = 50.0;
+	            double y = 200.0;
+	            Tung[tungI] = new Tanque(y, x);
+	            tungI++;
+	        }
+	    }
+	}
+
 	 private void inicializarTablero() {
 	        tablero = new Campo[filas][columnas];
 	        for (int i = 0; i < filas; i++) {
@@ -90,6 +117,7 @@ public class Juego extends InterfaceJuego
 		
 		 entorno.colorFondo(new Color(0, 120, 0)); // Césped
 	        dibujarTablero();
+	    
 	        
 	    for (int i = 0; i < filas; i++) {
 		    regalosPorFila[i].dibujar(entorno);
@@ -97,24 +125,46 @@ public class Juego extends InterfaceJuego
 	        
 	    icon.dibujar(entorno);
 	    iconT.dibujar(entorno);
-		
-		//roseblade dibujada
-		roseBlade.dibujar(entorno);
-		if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(roseBlade)) {
-			roseBlade.seleccionada = true;
-			arrastrar();
-		}else {
-			roseBlade.seleccionada = false;
-		}
-		
-		tung.dibujar(entorno);
-		if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tung)) {
-			tung.seleccionada = true;
-			arrastrarT();
-		}else {
-			tung.seleccionada = false;}
-		
-		
+	    generarPlantas();
+
+	 // Dibujar plantas disponibles
+	 for (int i = 0; i < RoseBlade.length; i++) {
+	     Planta p = RoseBlade[i];
+	     if (p != null) {
+	         p.dibujar(entorno);
+
+	         // Detectar selección
+	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(p)) {
+	             p.seleccionada = true;
+	             arrastrar(p);
+	         }
+
+	         // Soltar sobre casilla
+	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && p.seleccionada) {
+	             colocarEnCasilla(p);
+	             p.seleccionada = false;
+	         }
+	     }
+	 }
+
+	 // Dibujar tanques disponibles
+	 for (int i = 0; i < Tung.length; i++) {
+	     Tanque t = Tung[i];
+	     if (t != null) {
+	         t.dibujar(entorno);
+
+	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(t)) {
+	             t.seleccionada = true;
+	             arrastrarT(t);
+	         }
+
+	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && t.seleccionada) {
+	             colocarEnCasilla(t);
+	             t.seleccionada = false;
+	         }
+	     }
+	 }
+	
 
 		
 	}
@@ -124,15 +174,16 @@ public class Juego extends InterfaceJuego
 	     
 		
 	
-	private void arrastrar() {
-		roseBlade.x = entorno.mouseX();
-		roseBlade.y = entorno.mouseY();
+	private void arrastrar(Planta rosa) {
+	    rosa.x = entorno.mouseX();
+	    rosa.y = entorno.mouseY();
 	}
-	
-	private void arrastrarT() {
-		tung.x = entorno.mouseX();
-		tung.y = entorno.mouseY();
+
+	private void arrastrarT(Tanque tung) {
+	    tung.x = entorno.mouseX();
+	    tung.y = entorno.mouseY();
 	}
+
 	
 	private boolean seleccionada(Planta p) {
 		double cursorX = entorno.mouseX();
@@ -153,6 +204,59 @@ public class Juego extends InterfaceJuego
             }
         }
 	}
+	private void colocarEnCasilla(Planta p) {
+	    double mx = entorno.mouseX();
+	    double my = entorno.mouseY();
+
+	    for (int i = 0; i < filas; i++) {
+	        for (int j = 0; j < columnas; j++) {
+	            Campo c = tablero[i][j];
+
+	            double xMin = c.getX() - (anchoCasilla / 2);
+	            double xMax = c.getX() + (anchoCasilla / 2);
+	            double yMin = c.getY() - (altoCasilla / 2);
+	            double yMax = c.getY() + (altoCasilla / 2);
+
+	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
+	                if (!c.estaOcupada()) {
+	                    p.x = c.getX();
+	                    p.y = c.getY();
+	                    c.ocupar();
+	                    System.out.println("RoseBlade colocada en [" + i + "][" + j + "]");
+	                }
+	                return;
+	            }
+	        }
+	    }
+	}
+
+	private void colocarEnCasilla(Tanque t) {
+	    double mx = entorno.mouseX();
+	    double my = entorno.mouseY();
+
+	    for (int i = 0; i < filas; i++) {
+	        for (int j = 0; j < columnas; j++) {
+	            Campo c = tablero[i][j];
+
+	            double xMin = c.getX() - (anchoCasilla / 2);
+	            double xMax = c.getX() + (anchoCasilla / 2);
+	            double yMin = c.getY() - (altoCasilla / 2);
+	            double yMax = c.getY() + (altoCasilla / 2);
+
+	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
+	                if (!c.estaOcupada()) {
+	                    t.x = c.getX();
+	                    t.y = c.getY();
+	                    c.ocupar();
+	                    System.out.println("Tung colocado en [" + i + "][" + j + "]");
+	                }
+	                return;
+	            }
+	        }
+	    }
+	}
+
+	
 	
 
 	@SuppressWarnings("unused")
