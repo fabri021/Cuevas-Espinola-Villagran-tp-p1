@@ -15,7 +15,7 @@ public class Planta {
 	boolean seleccionada;
 	private int recall;
 	
-	public Planta(double y, double x) {
+	public Planta(double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.escala = 0.15;

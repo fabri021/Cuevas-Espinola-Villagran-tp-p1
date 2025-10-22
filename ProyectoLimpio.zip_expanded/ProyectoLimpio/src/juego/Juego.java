@@ -10,6 +10,8 @@ public class Juego extends InterfaceJuego
 	// El objeto Entorno que controla el tiempo y otros
 	Planta roseBlade;
 	Tanque tung;
+	Planta icon;
+	Tanque iconT;
 	Regalos gift;
 	private Entorno entorno;
 	private Campo[][] tablero;
@@ -29,9 +31,12 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		roseBlade = new Planta(100.0, 100.0);
-		tung = new Tanque(150.0, 150.0);
-		gift = new Regalos(100.0, 100.0, 50.0, 50.0);	
+		
+		roseBlade = new Planta(50.0, 50.0);
+		tung = new Tanque(200.0, 50.0);
+		icon = new Planta(50.0,50.0);
+		iconT = new Tanque(200.0,50.0);
+		gift = new Regalos(100.0, 100.0, 51.0, 51.0);	
 		
 		this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
 	
@@ -64,8 +69,8 @@ public class Juego extends InterfaceJuego
 		    regalosPorFila = new Regalos[filas];
 		    for (int i = 0; i < filas; i++) {
 		        Campo c = tablero[i][0]; // primera columna de cada fila
-		        double xCentro = c.getX() + c.getAncho() / 40;
-		        double yCentro = c.getY() + c.getAlto() / 40;
+		        double xCentro = c.getX() + c.getAncho() / 220;
+		        double yCentro = c.getY() + c.getAlto() / 220;
 		        regalosPorFila[i] = new Regalos(xCentro, yCentro, 50.0, 50.0);
 		    }
 		}
@@ -82,8 +87,16 @@ public class Juego extends InterfaceJuego
 	 */
 	public void tick()
 	{
+		
 		 entorno.colorFondo(new Color(0, 120, 0)); // Césped
 	        dibujarTablero();
+	        
+	    for (int i = 0; i < filas; i++) {
+		    regalosPorFila[i].dibujar(entorno);
+		}    
+	        
+	    icon.dibujar(entorno);
+	    iconT.dibujar(entorno);
 		
 		//roseblade dibujada
 		roseBlade.dibujar(entorno);
@@ -101,9 +114,7 @@ public class Juego extends InterfaceJuego
 		}else {
 			tung.seleccionada = false;}
 		
-		for (int i = 0; i < filas; i++) {
-		    regalosPorFila[i].dibujar(entorno);
-		}
+		
 
 		
 	}

@@ -15,7 +15,7 @@ public class Tanque {
 	boolean seleccionada;
 	private int recall;
 	
-	public Tanque(double y, double x) {
+	public Tanque(double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.escala = 0.08;
