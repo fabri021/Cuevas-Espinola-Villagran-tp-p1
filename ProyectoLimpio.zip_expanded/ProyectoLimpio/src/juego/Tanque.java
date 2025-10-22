@@ -13,14 +13,13 @@ public class Tanque {
 	Image imgP;
 	private int vida;
 	boolean seleccionada;
-	private int recall;
+	
 	
 	public Tanque(double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.escala = 0.08;
 		imgP = Herramientas.cargarImagen("TanqueSigma.jpeg");
-		this.recall = 24;
 		this.seleccionada = false;
 		this.vida = 10;
 	}
@@ -28,7 +27,7 @@ public class Tanque {
 	public void dibujar (Entorno entorno) {
 		entorno.dibujarImagen(imgP, this.x, this.y, 0, this.escala);
 	}
-
+	//creamos los bordes
 	public double getBordeIzq() {
 	    this.bordeIzq = x - imgP.getWidth(null)/2 * this.escala;
 	    return bordeIzq;
@@ -48,7 +47,7 @@ public class Tanque {
 	    this.bordeInf = y + imgP.getHeight(null)/2 * this.escala;
 	    return bordeInf;
 	}
-
+	//getters y setters
 	public int getVida() {
 		return vida;
 	}
@@ -56,8 +55,8 @@ public class Tanque {
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
-
-
+	
+	//creamos el boolean para seleccionar el Tanque en Juego
 	public boolean isSeleccionada() {
 		return seleccionada;
 	}
@@ -66,11 +65,5 @@ public class Tanque {
 		this.seleccionada = seleccionada;
 	}
 
-	public int getRecall() {
-		return recall;
-	}
 
-	public void setRecall(int recall) {
-		this.recall = recall;
-	}
 }

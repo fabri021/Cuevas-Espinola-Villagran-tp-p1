@@ -11,9 +11,11 @@ public class Juego extends InterfaceJuego
 	Planta icon;
 	Tanque iconT;
 	Regalos gift;
+	//arreglo para generar las plantas
 	private Planta[] RoseBlade;
 	private Tanque[] Tung;
 	private int contadorTicks = 0;
+	//indices para recorres los arreglos
 	private int roseI = 0;
 	private int tungI = 0;
 
@@ -63,14 +65,15 @@ public class Juego extends InterfaceJuego
 	private void generarPlantas() {
 	    contadorTicks++;
 
-	    // Cada 100 ticks, agregamos una nueva planta si queda lugar
-	    if (contadorTicks % 500 == 0) {
+	    // Cada 300 ticks, agregamos una nueva planta si queda lugar
+	    if (contadorTicks % 300 == 0) {
 	        if (roseI < RoseBlade.length) {
-	            // Aparecen alineadas en el HUD, por ejemplo una al lado de otra
+	            
 	            double x = 50.0;
 	            double y = 50.0;
 	            RoseBlade[roseI] = new Planta(y, x);
 	            roseI++;
+	            System.out.println("RoseBlade está disponible");
 	        }
 
 	        if (tungI < Tung.length) {
@@ -78,6 +81,7 @@ public class Juego extends InterfaceJuego
 	            double y = 200.0;
 	            Tung[tungI] = new Tanque(y, x);
 	            tungI++;
+	            System.out.println("Tanque está disponible");
 	        }
 	    }
 	}
@@ -114,7 +118,7 @@ public class Juego extends InterfaceJuego
 	 */
 	public void tick()
 	{
-		
+		//mostramos las casillas
 		 entorno.colorFondo(new Color(0, 120, 0)); // Césped
 	        dibujarTablero();
 	    
@@ -122,45 +126,45 @@ public class Juego extends InterfaceJuego
 	    for (int i = 0; i < filas; i++) {
 		    regalosPorFila[i].dibujar(entorno);
 		}    
-	        
+	    //mostramos los iconos  
 	    icon.dibujar(entorno);
 	    iconT.dibujar(entorno);
 	    generarPlantas();
 
 	 // Dibujar plantas disponibles
 	 for (int i = 0; i < RoseBlade.length; i++) {
-	     Planta p = RoseBlade[i];
-	     if (p != null) {
-	         p.dibujar(entorno);
+	     Planta planta = RoseBlade[i];
+	     if (planta != null) {
+	         planta.dibujar(entorno);
 
 	         // Detectar selección
-	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(p)) {
-	             p.seleccionada = true;
-	             arrastrar(p);
+	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(planta)) {
+	        	 planta.seleccionada = true;
+	             arrastrar(planta);
 	         }
 
 	         // Soltar sobre casilla
-	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && p.seleccionada) {
-	             colocarEnCasilla(p);
-	             p.seleccionada = false;
+	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && planta.seleccionada) {
+	             colocarEnCasilla(planta);
+	             planta.seleccionada = false;
 	         }
 	     }
 	 }
 
 	 // Dibujar tanques disponibles
 	 for (int i = 0; i < Tung.length; i++) {
-	     Tanque t = Tung[i];
-	     if (t != null) {
-	         t.dibujar(entorno);
+	     Tanque tanque = Tung[i];
+	     if (tanque != null) {
+	    	 tanque.dibujar(entorno);
 
-	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(t)) {
-	             t.seleccionada = true;
-	             arrastrarT(t);
+	         if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tanque)) {
+	        	 tanque.seleccionada = true;
+	             arrastrarT(tanque);
 	         }
 
-	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && t.seleccionada) {
-	             colocarEnCasilla(t);
-	             t.seleccionada = false;
+	         if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && tanque.seleccionada) {
+	             colocarEnCasilla(tanque);
+	             tanque.seleccionada = false;
 	         }
 	     }
 	 }
@@ -204,6 +208,7 @@ public class Juego extends InterfaceJuego
             }
         }
 	}
+	//coloca la planta en un casillero disponible y lo centra
 	private void colocarEnCasilla(Planta p) {
 	    double mx = entorno.mouseX();
 	    double my = entorno.mouseY();
@@ -229,7 +234,7 @@ public class Juego extends InterfaceJuego
 	        }
 	    }
 	}
-
+	//coloca al tanque en un casillero disponible y lo centra
 	private void colocarEnCasilla(Tanque t) {
 	    double mx = entorno.mouseX();
 	    double my = entorno.mouseY();

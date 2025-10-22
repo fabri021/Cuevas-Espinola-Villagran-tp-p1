@@ -13,7 +13,6 @@ public class Planta {
 	private int vida;
 	private int danio;
 	boolean seleccionada;
-	private int recall;
 	
 	public Planta(double x, double y) {
 		this.x = x;
@@ -21,7 +20,6 @@ public class Planta {
 		this.escala = 0.15;
 		imgP = Herramientas.cargarImagen("pd.png");
 		this.danio = 1;
-		this.recall = 24;
 		this.seleccionada = false;
 		this.vida = 1;
 	}
@@ -29,7 +27,7 @@ public class Planta {
 	public void dibujar (Entorno entorno) {
 		entorno.dibujarImagen(imgP, this.x, this.y, 0, this.escala);
 	}
-
+	//Creamos los bordes
 	public double getBordeIzq() {
 	    this.bordeIzq = x - imgP.getWidth(null)/2 * this.escala;
 	    return bordeIzq;
@@ -49,7 +47,7 @@ public class Planta {
 	    this.bordeInf = y + imgP.getHeight(null)/2 * this.escala;
 	    return bordeInf;
 	}
-
+	// getters y setters
 	public int getVida() {
 		return vida;
 	}
@@ -65,7 +63,7 @@ public class Planta {
 	public void setDanio(int danio) {
 		this.danio = danio;
 	}
-
+	//boolean para seleccionar la planta en Juego
 	public boolean isSeleccionada() {
 		return seleccionada;
 	}
@@ -74,11 +72,5 @@ public class Planta {
 		this.seleccionada = seleccionada;
 	}
 
-	public int getRecall() {
-		return recall;
-	}
 
-	public void setRecall(int recall) {
-		this.recall = recall;
-	}
 }
