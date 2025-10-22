@@ -10,6 +10,7 @@ public class Juego extends InterfaceJuego
 	// El objeto Entorno que controla el tiempo y otros
 	Planta roseBlade;
 	Tanque tung;
+	Regalos gift;
 	private Entorno entorno;
 	private Campo[][] tablero;
     private int filas = 5;
@@ -18,6 +19,7 @@ public class Juego extends InterfaceJuego
     private double altoCasilla = 102;
     private double margenX = 51;
     private double margenY = 151;
+    private Regalos[] regalosPorFila;
     //llamamos la clase planta
     
 	
@@ -29,11 +31,16 @@ public class Juego extends InterfaceJuego
 		// Inicializa el objeto entorno
 		roseBlade = new Planta(100.0, 100.0);
 		tung = new Tanque(150.0, 150.0);
-				
+		gift = new Regalos(100.0, 100.0, 50.0, 50.0);	
+		
 		this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
+	
+		
+		
+		
 		
 		inicializarTablero();
-		
+		inicializarRegalosPorFila();
 		
 		
 		
@@ -53,6 +60,19 @@ public class Juego extends InterfaceJuego
 	            }
 	        }
 	    }
+	 private void inicializarRegalosPorFila() {
+		    regalosPorFila = new Regalos[filas];
+		    for (int i = 0; i < filas; i++) {
+		        Campo c = tablero[i][0]; // primera columna de cada fila
+		        double xCentro = c.getX() + c.getAncho() / 40;
+		        double yCentro = c.getY() + c.getAlto() / 40;
+		        regalosPorFila[i] = new Regalos(xCentro, yCentro, 50.0, 50.0);
+		    }
+		}
+
+	 
+	 
+	 
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -79,15 +99,20 @@ public class Juego extends InterfaceJuego
 			tung.seleccionada = true;
 			arrastrarT();
 		}else {
-			tung.seleccionada = false;
+			tung.seleccionada = false;}
+		
+		for (int i = 0; i < filas; i++) {
+		    regalosPorFila[i].dibujar(entorno);
 		}
-		
-		
-		// Procesamiento de un instante de tiempo
-		// ...
-	     
+
 		
 	}
+		
+		
+		
+	     
+		
+	
 	private void arrastrar() {
 		roseBlade.x = entorno.mouseX();
 		roseBlade.y = entorno.mouseY();
@@ -116,7 +141,7 @@ public class Juego extends InterfaceJuego
                 tablero[i][j].dibujar(entorno);
             }
         }
-    }
+	}
 	
 
 	@SuppressWarnings("unused")

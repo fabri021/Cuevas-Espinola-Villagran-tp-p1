@@ -25,6 +25,24 @@ public class Campo {
     public boolean estaOcupada() { return ocupada; }
     public void ocupar() { ocupada = true; }
     public void liberar() { ocupada = false; }
+
+	public double getAncho() {
+		return ancho;
+	}
+
+	public void setAncho(double ancho) {
+		this.ancho = ancho;
+	}
+
+	public double getAlto() {
+		return alto;
+	}
+
+	public void setAlto(double alto) {
+		this.alto = alto;
+	}
+
+	
     
 }
 
