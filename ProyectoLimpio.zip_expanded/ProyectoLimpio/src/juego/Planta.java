@@ -13,6 +13,11 @@ public class Planta {
 	private int vida;
 	private int danio;
 	boolean seleccionada;
+	private boolean enTablero = false;
+	boolean colocada;
+
+	
+
 	
 	public Planta(double x, double y) {
 		this.x = x;
@@ -22,11 +27,22 @@ public class Planta {
 		this.danio = 1;
 		this.seleccionada = false;
 		this.vida = 1;
+		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {
 		entorno.dibujarImagen(imgP, this.x, this.y, 0, this.escala);
 	}
+	
+	
+	public boolean estaEnTablero() { 
+		return enTablero; 
+		}
+	public void setEnTablero(boolean b) { 
+		enTablero = b; 
+		}
+	
+	
 	//Creamos los bordes
 	public double getBordeIzq() {
 	    this.bordeIzq = x - imgP.getWidth(null)/2 * this.escala;

@@ -6,6 +6,7 @@ public class Campo {
     private double x, y;     // posición del centro de la casilla
     private double ancho, alto;
     private boolean ocupada;
+    private boolean bloqueadoRegalo; //bloquear las casillas de los regalos
 
     public Campo(double x, double y, double ancho, double alto) {
         this.x = x;
@@ -19,30 +20,20 @@ public class Campo {
         e.dibujarRectangulo(x, y, ancho, alto, 0, Color.GREEN);
     }
 
-    // Getters y setters
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public boolean estaOcupada() { return ocupada; }
+    public boolean estaOcupada() {
+        return ocupada || bloqueadoRegalo;
+    }
+
     public void ocupar() { ocupada = true; }
     public void liberar() { ocupada = false; }
 
-	public double getAncho() {
-		return ancho;
-	}
+    public void bloquearRegalo() { bloqueadoRegalo = true; }
+    public void desbloquearRegalo() { bloqueadoRegalo = false; }
 
-	public void setAncho(double ancho) {
-		this.ancho = ancho;
-	}
-
-	public double getAlto() {
-		return alto;
-	}
-
-	public void setAlto(double alto) {
-		this.alto = alto;
-	}
-
-	
-    
+    // getters
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getAncho() { return ancho; }
+    public double getAlto() { return alto; }
 }
 

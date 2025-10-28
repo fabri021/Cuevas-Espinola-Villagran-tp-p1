@@ -13,6 +13,11 @@ public class Tanque {
 	Image imgP;
 	private int vida;
 	boolean seleccionada;
+	private boolean enTablero = false;
+	boolean colocada;
+
+	
+
 	
 	
 	public Tanque(double x, double y) {
@@ -22,6 +27,7 @@ public class Tanque {
 		imgP = Herramientas.cargarImagen("TanqueSigma.jpeg");
 		this.seleccionada = false;
 		this.vida = 10;
+		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {
@@ -33,6 +39,15 @@ public class Tanque {
 	    return bordeIzq;
 	}
 
+	public boolean estaEnTablero() { 
+		return enTablero;
+		}
+	
+	
+	public void setEnTablero(boolean b) { 
+		enTablero = b; 
+		}
+	
 	public double getBordeDer() {
 	    this.bordeDer = x + imgP.getWidth(null)/2 * this.escala;
 	    return bordeDer;
