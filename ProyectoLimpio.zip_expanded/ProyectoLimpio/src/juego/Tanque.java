@@ -13,6 +13,7 @@ public class Tanque {
 	Image imgP;
 	private int vida;
 	boolean seleccionada;
+	boolean colocada;
 	
 	
 	public Tanque(double x, double y) {
@@ -22,6 +23,7 @@ public class Tanque {
 		imgP = Herramientas.cargarImagen("TanqueSigma.jpeg");
 		this.seleccionada = false;
 		this.vida = 10;
+		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {

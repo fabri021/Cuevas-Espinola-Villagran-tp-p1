@@ -13,6 +13,7 @@ public class Planta {
 	private int vida;
 	private int danio;
 	boolean seleccionada;
+	boolean colocada;
 	
 	public Planta(double x, double y) {
 		this.x = x;
@@ -22,6 +23,7 @@ public class Planta {
 		this.danio = 1;
 		this.seleccionada = false;
 		this.vida = 1;
+		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {
