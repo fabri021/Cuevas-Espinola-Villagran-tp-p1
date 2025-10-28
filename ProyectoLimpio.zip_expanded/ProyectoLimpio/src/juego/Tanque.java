@@ -13,11 +13,15 @@ public class Tanque {
 	Image imgP;
 	private int vida;
 	boolean seleccionada;
+<<<<<<< HEAD
 	private boolean enTablero = false;
 	boolean colocada;
 
 	
 
+=======
+	boolean colocada;
+>>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 	
 	
 	public Tanque(double x, double y) {

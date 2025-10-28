@@ -32,6 +32,7 @@ public class Juego extends InterfaceJuego {
     private Planta searrastraPlanta = null;
     private Tanque searrastraTanque = null;
 
+<<<<<<< HEAD
     // Modo mover click derecho + flechas
     private Planta plantaEnMovimiento = null;
     private Tanque tanqueEnMovimiento = null;
@@ -45,6 +46,56 @@ public class Juego extends InterfaceJuego {
         this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
         RoseBlade = new Planta[10];
         Tung = new Tanque[10];
+=======
+		// Inicia el juego!
+		this.entorno.iniciar();
+	}
+	 private boolean hayPlantaDisponible() {
+	        for (int i = 0; i < roseI; i++) {
+	            if (RoseBlade[i] != null && !RoseBlade[i].colocada) {
+	                return true; // Hay al menos una planta generada y no colocada
+	            }
+	        }
+	        return false;
+	 }
+
+	 private boolean hayTanqueDisponible() {
+	        for (int i = 0; i < tungI; i++) {
+	            if (Tung[i] != null && !Tung[i].colocada) {
+	                return true;
+	            }
+	        }
+	        return false;
+	    }
+	
+	
+	private void generarPlantas() {
+	    contadorTicks++;
+
+	    // Cada 300 ticks, agregamos una nueva planta si queda lugar
+	    if (contadorTicks % 300 == 0) {
+	   
+	    	if (!hayPlantaDisponible() && roseI < RoseBlade.length) {
+	            
+	            double x = 50.0;
+	            double y = 50.0;
+	            RoseBlade[roseI] = new Planta(y, x);
+	            roseI++;
+	            System.out.println("RoseBlade está disponible");
+	    	 }	    		    		    	
+	    	
+	    	if (!hayTanqueDisponible() && tungI < Tung.length) {
+	    		double x = 50.0;
+	    		double y = 200.0;
+	    		Tung[tungI] = new Tanque(y, x);
+	    		tungI++;
+	            System.out.println("Tanque está disponible");
+	    	}	
+	    	
+	    }
+	 }
+	
+>>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
         inicializarTablero();
         inicializarRegalosPorFila();
@@ -56,6 +107,7 @@ public class Juego extends InterfaceJuego {
     private void generarPlantas() {
         contadorTicks++;
 
+<<<<<<< HEAD
         if (contadorTicks % 300 == 0) {
             boolean hayPlantaLibre = false;
             for (Planta p : RoseBlade) {
@@ -120,6 +172,58 @@ public class Juego extends InterfaceJuego {
 
         icon.dibujar(entorno);
         iconT.dibujar(entorno);
+=======
+	 // Dibujar plantas disponibles
+	    for (int i = 0; i < roseI; i++) {
+            Planta planta = RoseBlade[i];
+            if (planta != null) {
+                planta.dibujar(entorno);
+                // Detectar selección
+                if(!planta.colocada) {
+                	if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(planta)) {
+                		planta.seleccionada = true;
+                		arrastrar(planta);
+                	}
+                	// Soltar sobre casilla
+                	if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && planta.seleccionada) {
+                		colocarEnCasilla(planta);
+                		planta.seleccionada = false;
+                	}
+                }                
+            }
+        }
+
+	 // Dibujar tanques disponibles
+	    for (int i = 0; i < tungI; i++) {
+            Tanque tanque = Tung[i];
+            if (tanque != null) {
+                tanque.dibujar(entorno);
+                if (!tanque.colocada) {
+                	
+                	if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tanque)) {
+                		tanque.seleccionada = true;
+                		arrastrarT(tanque);
+                	}
+                	
+                	if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && tanque.seleccionada) {
+                		colocarEnCasilla(tanque);
+                		tanque.seleccionada = false;
+                	}
+                }                
+            }
+        }
+    }
+		
+		
+		
+	     
+		
+	
+	private void arrastrar(Planta rosa) {
+	    rosa.x = entorno.mouseX();
+	    rosa.y = entorno.mouseY();
+	}
+>>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
         generarPlantas();
 
@@ -231,6 +335,7 @@ public class Juego extends InterfaceJuego {
                my >= t.y - alto / 2 && my <= t.y + alto / 2;
     }
 
+<<<<<<< HEAD
     private boolean colocarEnCasilla(Planta p) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();
@@ -252,6 +357,25 @@ public class Juego extends InterfaceJuego {
         }
         return false;
     }
+=======
+	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
+	                if (!c.estaOcupada()) {
+	                    p.x = c.getX();
+	                    p.y = c.getY();
+	                    c.ocupar();
+	                    p.colocada = true;
+	                    System.out.println("RoseBlade colocada en [" + i + "][" + j + "]");
+	                }
+	                return;
+	            }
+	        }
+	    }
+	}
+	//coloca al tanque en un casillero disponible y lo centra
+	private void colocarEnCasilla(Tanque t) {
+	    double mx = entorno.mouseX();
+	    double my = entorno.mouseY();
+>>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
     private boolean colocarEnCasilla(Tanque t) {
         double mx = entorno.mouseX();
@@ -288,6 +412,7 @@ public class Juego extends InterfaceJuego {
         }
         if (filaActual == -1) return;
 
+<<<<<<< HEAD
         if (entorno.sePresiono(entorno.TECLA_ARRIBA) && filaActual > 0 &&
             !tablero[filaActual-1][colActual].estaOcupada()) {
             tablero[filaActual][colActual].liberar();
@@ -313,6 +438,21 @@ public class Juego extends InterfaceJuego {
             colocarPlantaEnCasilla(p, filaActual, colActual);
         }
     }
+=======
+	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
+	                if (!c.estaOcupada()) {
+	                    t.x = c.getX();
+	                    t.y = c.getY();
+	                    t.colocada = true;
+	                    c.ocupar();
+	                    System.out.println("Tung colocado en [" + i + "][" + j + "]");
+	                }
+	                return;
+	            }
+	        }
+	    }
+	}
+>>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
     private void colocarPlantaEnCasilla(Planta p, int fila, int col) {
         Campo c = tablero[fila][col];
