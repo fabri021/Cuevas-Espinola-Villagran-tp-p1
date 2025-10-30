@@ -10,6 +10,7 @@ public class Regalos {
 	double x, y;
 	private int vida;
 	private double ancho, largo;
+	private double bordeIzq, bordeDer, bordeSup,bordeInf;
 	double escala;
 	Image gift;
 	
@@ -53,11 +54,76 @@ public class Regalos {
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
+	
+	public double getBordeIzq() {
+		this.bordeIzq = x + gift.getWidth(null)/2 * this.escala;
+	    return bordeIzq;
+	}
+
+	public void setBordeIzq(double bordeIzq) {
+		this.bordeIzq = bordeIzq;
+	}
+
+
+
+	public double getBordeDer() {
+		this.bordeDer = x + gift.getWidth(null)/2 * this.escala;
+	    return bordeDer;
+	}
+
+
+
+	public void setBordeDer(double bordeDer) {
+		this.bordeDer = bordeDer;
+	}
+
+
+
+	public double getBordeSup() {
+		this.bordeSup = y + gift.getWidth(null)/2 * this.escala;
+	    return bordeSup;
+	}
+
+
+
+	public void setBordeSup(double bordeSup) {
+		this.bordeSup = bordeSup;
+	}
+
+
+
+	public double getBordeInf() {
+		this.bordeInf = y + gift.getWidth(null)/2 * this.escala;
+	    return bordeInf;	
+	   }
+
+
+
+	public void setBordeInf(double bordeInf) {
+		this.bordeInf = bordeInf;
+	}
+
+
+
 
 
 
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarImagen(gift, this.x, this.y, 0, this.escala);
+	}
+
+
+
+	public double getX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public double getY() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

@@ -3,19 +3,33 @@ package juego;
 import java.awt.Color;
 import entorno.Entorno;
 import entorno.InterfaceJuego;
+import java.util.Random;
+
 
 public class Juego extends InterfaceJuego {
     // El objeto Entorno que controla el tiempo y otros
+	
+	private boolean juegoActivo = true;
+	
     Planta icon;
     Tanque iconT;
     Regalos gift;
+    Zombies zombies;
     // arreglo para generar las plantas
     private Planta[] RoseBlade;
     private Tanque[] Tung;
+    
+    private Zombies[] zombie;
+    private int zomI = 0;
+    
+    
     private int contadorTicks = 0;
+    private int contadorTicksZ = 0;
     // indices para recorrer los arreglos
     private int roseI = 0;
     private int tungI = 0;
+    //random para aparicion zombies
+    private Random random = new Random();
 
     private Entorno entorno;
     private Campo[][] tablero;
@@ -46,6 +60,7 @@ public class Juego extends InterfaceJuego {
         this.entorno = new Entorno(this, "Proyecto para TP", 1016, 610);
         RoseBlade = new Planta[10];
         Tung = new Tanque[10];
+        zombie = new Zombies[10]; // O el tamaño que prefieras
 
         inicializarTablero();
         inicializarRegalosPorFila();
@@ -214,6 +229,47 @@ public class Juego extends InterfaceJuego {
             c.ocupar();
         }
     }
+    
+    private void generarZombies() {
+        contadorTicksZ++;
+        if (contadorTicksZ % 300 == 0 && zomI < zombie.length) {
+            int filaAleatoria = random.nextInt(filas);
+            double x = tablero[filaAleatoria][columnas - 1].getX();
+            double y = tablero[filaAleatoria][columnas - 1].getY();
+            zombie[zomI] = new Zombies(x + 50, y);
+            zomI++;
+            System.out.println("Zombie generado en fila " + filaAleatoria);
+        }
+    }
+
+    private void movimientoZombie() {
+        for (int i = 0; i < zomI; i++) {
+            if (zombie[i] != null) {  
+                zombie[i].x -= 3.5;              
+            }
+        }
+    }
+    
+    private void verificarColisionesRegalos() {
+    	 for (int i = 0; i < zombie.length; i++) {
+    	        Zombies z = zombie[i];
+    	        if (z != null ) {
+    	            for (int j = 0; j < regalosPorFila.length; j++) {
+    	                Regalos r = regalosPorFila[j];
+    	                if (r != null) {
+    	                    // Verificamos colisión simple (rectangular)
+    	                    if (Math.abs(z.x - r.getX()) < 40 && Math.abs(z.y - r.getY()) < 40) {
+    	                        System.out.println("Un zombie chocó con un regalo, perdiste!");
+
+
+    	                    }
+    	                }
+    	            }
+    	        }
+    	    }
+    }
+    
+    
 
     /**
      * Durante el juego, el método tick() será ejecutado en cada instante y
@@ -230,10 +286,19 @@ public class Juego extends InterfaceJuego {
         for (int i = 0; i < filas; i++) {
             regalosPorFila[i].dibujar(entorno);
         }
+        
+        for (int i = 0; i < zomI; i++) {
+            if (zombie[i] != null) {
+                zombie[i].dibujar(entorno);
+            }
+        }
         // mostramos los iconos
         icon.dibujar(entorno);
         iconT.dibujar(entorno);
         generarPlantas();
+        generarZombies();
+        movimientoZombie();
+        verificarColisionesRegalos();
 
         // Dibujar plantas disponibles y manejar selección
         for (int i = 0; i < roseI; i++) {
