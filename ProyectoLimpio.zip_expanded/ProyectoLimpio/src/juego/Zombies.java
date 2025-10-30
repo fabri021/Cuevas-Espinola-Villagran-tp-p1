@@ -10,6 +10,8 @@ public class Zombies {
 	private int vida;
 	private int danio;
 	double x , y , escala;
+	
+	
 	private double bordeIzq, bordeDer, bordeSup,bordeInf;
 	Image imgz;
 	
@@ -42,6 +44,7 @@ public class Zombies {
 	public void setDanio(int danio) {
 		this.danio = danio;
 	}
+	
 
 	public double getBordeIzq() {
 		this.bordeIzq = x - imgz.getWidth(null)/2 * this.escala;

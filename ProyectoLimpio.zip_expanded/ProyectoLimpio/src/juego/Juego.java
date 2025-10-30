@@ -9,12 +9,10 @@ import java.util.Random;
 public class Juego extends InterfaceJuego {
     // El objeto Entorno que controla el tiempo y otros
 	
-	private boolean juegoActivo = true;
-	
     Planta icon;
     Tanque iconT;
     Regalos gift;
-    Zombies zombies;
+    Zombies zom;
     // arreglo para generar las plantas
     private Planta[] RoseBlade;
     private Tanque[] Tung;
@@ -250,23 +248,8 @@ public class Juego extends InterfaceJuego {
         }
     }
     
-    private void verificarColisionesRegalos() {
-    	 for (int i = 0; i < zombie.length; i++) {
-    	        Zombies z = zombie[i];
-    	        if (z != null ) {
-    	            for (int j = 0; j < regalosPorFila.length; j++) {
-    	                Regalos r = regalosPorFila[j];
-    	                if (r != null) {
-    	                    // Verificamos colisión simple (rectangular)
-    	                    if (Math.abs(z.x - r.getX()) < 40 && Math.abs(z.y - r.getY()) < 40) {
-    	                        System.out.println("Un zombie chocó con un regalo, perdiste!");
-
-
-    	                    }
-    	                }
-    	            }
-    	        }
-    	    }
+    public boolean colision(double x1, double y1, double x2, double y2, double dist) {
+    	return (x1 - x2) * (x1 - x2) + (y1-y2) * (y1-y2) < dist*dist;
     }
     
     
@@ -298,7 +281,14 @@ public class Juego extends InterfaceJuego {
         generarPlantas();
         generarZombies();
         movimientoZombie();
-        verificarColisionesRegalos();
+        
+        
+        for( Zombies z : zombie) {
+        	 if (colision(z.x, z.y, gift.x, gift.y, 10  )) {
+        		 System.out.println("El zombie devoro tu regalo :( !!!");
+        	 }
+        }
+       
 
         // Dibujar plantas disponibles y manejar selección
         for (int i = 0; i < roseI; i++) {
