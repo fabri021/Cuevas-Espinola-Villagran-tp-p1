@@ -5,19 +5,18 @@ import entorno.Entorno;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
-    // Objetos HUD
+    // El objeto Entorno que controla el tiempo y otros
     Planta icon;
     Tanque iconT;
     Regalos gift;
-
-    // Arreglos para plantas y tanques
+    // arreglo para generar las plantas
     private Planta[] RoseBlade;
     private Tanque[] Tung;
     private int contadorTicks = 0;
+    // indices para recorrer los arreglos
     private int roseI = 0;
     private int tungI = 0;
 
-    // Entorno y tablero
     private Entorno entorno;
     private Campo[][] tablero;
     private int filas = 5;
@@ -27,117 +26,173 @@ public class Juego extends InterfaceJuego {
     private double margenX = 51;
     private double margenY = 151;
     private Regalos[] regalosPorFila;
-
-    // Arrastre click izquierdo
-    private Planta searrastraPlanta = null;
-    private Tanque searrastraTanque = null;
-
-<<<<<<< HEAD
-    // Modo mover click derecho + flechas
+    boolean modoMover = false;
     private Planta plantaEnMovimiento = null;
     private Tanque tanqueEnMovimiento = null;
-    private boolean modoMover = false;
+    // Nueva variable para manejar selección única
+    private Object objetoSeleccionado = null;
+    // llamamos la clase planta
+
+    // Variables y métodos propios de cada grupo
+    // ...
 
     Juego() {
+        // Inicializa el objeto entorno
+
         icon = new Planta(50.0, 50.0);
         iconT = new Tanque(200.0, 50.0);
         gift = new Regalos(100.0, 100.0, 51.0, 51.0);
 
-        this.entorno = new Entorno(this, "Proyecto para TP", 916, 610);
+        this.entorno = new Entorno(this, "Proyecto para TP", 1016, 610);
         RoseBlade = new Planta[10];
         Tung = new Tanque[10];
-=======
-		// Inicia el juego!
-		this.entorno.iniciar();
-	}
-	 private boolean hayPlantaDisponible() {
-	        for (int i = 0; i < roseI; i++) {
-	            if (RoseBlade[i] != null && !RoseBlade[i].colocada) {
-	                return true; // Hay al menos una planta generada y no colocada
-	            }
-	        }
-	        return false;
-	 }
-
-	 private boolean hayTanqueDisponible() {
-	        for (int i = 0; i < tungI; i++) {
-	            if (Tung[i] != null && !Tung[i].colocada) {
-	                return true;
-	            }
-	        }
-	        return false;
-	    }
-	
-	
-	private void generarPlantas() {
-	    contadorTicks++;
-
-	    // Cada 300 ticks, agregamos una nueva planta si queda lugar
-	    if (contadorTicks % 300 == 0) {
-	   
-	    	if (!hayPlantaDisponible() && roseI < RoseBlade.length) {
-	            
-	            double x = 50.0;
-	            double y = 50.0;
-	            RoseBlade[roseI] = new Planta(y, x);
-	            roseI++;
-	            System.out.println("RoseBlade está disponible");
-	    	 }	    		    		    	
-	    	
-	    	if (!hayTanqueDisponible() && tungI < Tung.length) {
-	    		double x = 50.0;
-	    		double y = 200.0;
-	    		Tung[tungI] = new Tanque(y, x);
-	    		tungI++;
-	            System.out.println("Tanque está disponible");
-	    	}	
-	    	
-	    }
-	 }
-	
->>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
         inicializarTablero();
         inicializarRegalosPorFila();
 
+        // Inicializar lo que haga falta para el juego
+        // ...
+
+        // Inicia el juego!
         this.entorno.iniciar();
     }
 
-    // --------------------- GENERACIÓN DE OBJETOS ---------------------
-    private void generarPlantas() {
-        contadorTicks++;
-
-<<<<<<< HEAD
-        if (contadorTicks % 300 == 0) {
-            boolean hayPlantaLibre = false;
-            for (Planta p : RoseBlade) {
-                if (p != null && !p.seleccionada) {
-                    hayPlantaLibre = true;
-                    break;
+    private void moverPlanta(Planta p) {
+        int filaActual = -1, colActual = -1;
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if (tablero[i][j].getX() == p.x && tablero[i][j].getY() == p.y) {
+                    filaActual = i;
+                    colActual = j;
                 }
             }
-            if (!hayPlantaLibre && roseI < RoseBlade.length) {
-                RoseBlade[roseI] = new Planta(50.0, 50.0);
-                roseI++;
-                System.out.println("Planta disponible");
-            }
+        }
+        if (filaActual == -1) return;
 
-            boolean hayTanqueLibre = false;
-            for (Tanque t : Tung) {
-                if (t != null && !t.seleccionada) {
-                    hayTanqueLibre = true;
-                    break;
-                }
-            }
-            if (!hayTanqueLibre && tungI < Tung.length) {
-                Tung[tungI] = new Tanque(200.0, 50.0);
-                tungI++;
-                System.out.println("Tanque disponible");
-            }
+        if (entorno.sePresiono(entorno.TECLA_ARRIBA) && filaActual > 0 &&
+            !tablero[filaActual - 1][colActual].estaOcupada()) {
+            tablero[filaActual][colActual].liberar();
+            filaActual--;
+            colocarPlantaEnCasilla(p, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_ABAJO) && filaActual < filas - 1 &&
+            !tablero[filaActual + 1][colActual].estaOcupada()) {
+            tablero[filaActual][colActual].liberar();
+            filaActual++;
+            colocarPlantaEnCasilla(p, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && colActual > 0 &&
+            !tablero[filaActual][colActual - 1].estaOcupada()) {
+            tablero[filaActual][colActual].liberar();
+            colActual--;
+            colocarPlantaEnCasilla(p, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_DERECHA) && colActual < columnas - 1 &&
+            !tablero[filaActual][colActual + 1].estaOcupada()) {
+            tablero[filaActual][colActual].liberar();
+            colActual++;
+            colocarPlantaEnCasilla(p, filaActual, colActual);
         }
     }
 
-    // --------------------- INICIALIZAR TABLERO ---------------------
+    private void moverTanque(Tanque t) {
+        int filaActual = -1, colActual = -1;
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if (tablero[i][j].getX() == t.x && tablero[i][j].getY() == t.y) {
+                    filaActual = i;
+                    colActual = j;
+                }
+            }
+        }
+        if (filaActual == -1) return;
+
+        if (entorno.sePresiono(entorno.TECLA_ARRIBA) && filaActual > 0 &&
+            !tablero[filaActual - 1][colActual].estaOcupada()) {
+        	
+            tablero[filaActual][colActual].liberar();            
+            filaActual--;       
+            colocarTanqueEnCasilla(t, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_ABAJO) && filaActual < filas - 1 &&
+            !tablero[filaActual + 1][colActual].estaOcupada()) {
+        	
+        	tablero[filaActual][colActual].liberar();
+            filaActual++;
+            colocarTanqueEnCasilla(t, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && colActual > 0 &&
+            !tablero[filaActual][colActual - 1].estaOcupada()) {
+            tablero[filaActual][colActual].liberar();
+            colActual--;
+            colocarTanqueEnCasilla(t, filaActual, colActual);
+        }
+        if (entorno.sePresiono(entorno.TECLA_DERECHA) && colActual < columnas - 1 &&
+            !tablero[filaActual][colActual + 1].estaOcupada()) {
+            	tablero[filaActual][colActual].liberar();
+            	colActual++;
+            	colocarTanqueEnCasilla(t, filaActual, colActual);
+        }
+    }
+
+    private void colocarPlantaEnCasilla(Planta p, int fila, int col) {
+        Campo c = tablero[fila][col];
+        p.x = c.getX();
+        p.y = c.getY();
+        c.ocupar();
+    }
+
+    private void colocarTanqueEnCasilla(Tanque t, int fila, int col) {
+        Campo c = tablero[fila][col];
+        t.x = c.getX();
+        t.y = c.getY();
+        c.ocupar();
+    }
+
+    private boolean hayPlantaDisponible() {
+        for (int i = 0; i < roseI; i++) {
+            if (RoseBlade[i] != null && !RoseBlade[i].colocada) {
+                return true; // Hay al menos una planta generada y no colocada
+            }
+        }
+        return false;
+    }
+
+    private boolean hayTanqueDisponible() {
+        for (int i = 0; i < tungI; i++) {
+            if (Tung[i] != null && !Tung[i].colocada) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void generarPlantas() {
+        contadorTicks++;
+
+        // Cada 300 ticks, agregamos una nueva planta si queda lugar
+        if (contadorTicks % 300 == 0) {
+
+            if (!hayPlantaDisponible() && roseI < RoseBlade.length) {
+
+                double x = 50.0;
+                double y = 50.0;
+                RoseBlade[roseI] = new Planta(y, x);
+                roseI++;
+                System.out.println("RoseBlade está disponible");
+            }
+
+            if (!hayTanqueDisponible() && tungI < Tung.length) {
+                double x = 50.0;
+                double y = 200.0;
+                Tung[tungI] = new Tanque(y, x);
+                tungI++;
+                System.out.println("Tanque está disponible");
+            }
+
+        }
+    }
+
     private void inicializarTablero() {
         tablero = new Campo[filas][columnas];
         for (int i = 0; i < filas; i++) {
@@ -152,144 +207,94 @@ public class Juego extends InterfaceJuego {
     private void inicializarRegalosPorFila() {
         regalosPorFila = new Regalos[filas];
         for (int i = 0; i < filas; i++) {
-            Campo c = tablero[i][0]; // primera columna
-            double xCentro = c.getX();
-            double yCentro = c.getY();
+            Campo c = tablero[i][0]; // primera columna de cada fila
+            double xCentro = c.getX() + c.getAncho() / 220;
+            double yCentro = c.getY() + c.getAlto() / 220;
             regalosPorFila[i] = new Regalos(xCentro, yCentro, 50.0, 50.0);
-            // Bloqueamos la casilla para plantas/tanques
-            c.bloquearRegalo();
+            c.ocupar();
         }
     }
 
-    // --------------------- TICK ---------------------
+    /**
+     * Durante el juego, el método tick() será ejecutado en cada instante y
+     * por lo tanto es el método más importante de esta clase. Aquí se debe
+     * actualizar el estado interno del juego para simular el paso del tiempo
+     * (ver el enunciado del TP para mayor detalle).
+     */
     public void tick() {
-        entorno.colorFondo(new Color(0, 120, 0));
+
+        // mostramos las casillas
+        entorno.colorFondo(new Color(0, 120, 0)); // Césped
         dibujarTablero();
 
         for (int i = 0; i < filas; i++) {
             regalosPorFila[i].dibujar(entorno);
         }
-
+        // mostramos los iconos
         icon.dibujar(entorno);
         iconT.dibujar(entorno);
-=======
-	 // Dibujar plantas disponibles
-	    for (int i = 0; i < roseI; i++) {
+        generarPlantas();
+
+        // Dibujar plantas disponibles y manejar selección
+        for (int i = 0; i < roseI; i++) {
             Planta planta = RoseBlade[i];
             if (planta != null) {
                 planta.dibujar(entorno);
-                // Detectar selección
-                if(!planta.colocada) {
-                	if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(planta)) {
-                		planta.seleccionada = true;
-                		arrastrar(planta);
-                	}
-                	// Soltar sobre casilla
-                	if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && planta.seleccionada) {
-                		colocarEnCasilla(planta);
-                		planta.seleccionada = false;
-                	}
-                }                
+                
+                // Detectar selección solo si no hay nada seleccionado
+                if (objetoSeleccionado == null && !planta.colocada &&
+                    entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(planta)) {
+                    objetoSeleccionado = planta;
+                    planta.seleccionada = true;
+                }
             }
         }
 
-	 // Dibujar tanques disponibles
-	    for (int i = 0; i < tungI; i++) {
+        // Dibujar tanques disponibles y manejar selección
+        for (int i = 0; i < tungI; i++) {
             Tanque tanque = Tung[i];
             if (tanque != null) {
                 tanque.dibujar(entorno);
-                if (!tanque.colocada) {
-                	
-                	if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tanque)) {
-                		tanque.seleccionada = true;
-                		arrastrarT(tanque);
-                	}
-                	
-                	if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && tanque.seleccionada) {
-                		colocarEnCasilla(tanque);
-                		tanque.seleccionada = false;
-                	}
-                }                
-            }
-        }
-    }
-		
-		
-		
-	     
-		
-	
-	private void arrastrar(Planta rosa) {
-	    rosa.x = entorno.mouseX();
-	    rosa.y = entorno.mouseY();
-	}
->>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
-
-        generarPlantas();
-
-        for (Planta p : RoseBlade) {
-            if (p != null) p.dibujar(entorno);
-        }
-        for (Tanque t : Tung) {
-            if (t != null) t.dibujar(entorno);
-        }
-
-        // ----------------- ARRRASTRE CLICK IZQUIERDO -----------------
-        if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-            if (searrastraPlanta == null && searrastraTanque == null) {
-                for (Planta p : RoseBlade) {
-                    if (p != null && !p.seleccionada && !p.estaEnTablero()) {
-                        searrastraPlanta = p;
-                        p.seleccionada = true;
-                        break;
-                    }
-                }
-                if (searrastraPlanta == null) {
-                    for (Tanque t : Tung) {
-                        if (t != null && !t.seleccionada && !t.estaEnTablero()) {
-                            searrastraTanque = t;
-                            t.seleccionada = true;
-                            break;
-                        }
-                    }
+                if (objetoSeleccionado == null && !tanque.colocada &&
+                    entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(tanque)) {
+                    objetoSeleccionado = tanque;
+                    tanque.seleccionada = true;
                 }
             }
         }
 
-        if (searrastraPlanta != null) {
-            searrastraPlanta.x = entorno.mouseX();
-            searrastraPlanta.y = entorno.mouseY();
-        } else if (searrastraTanque != null) {
-            searrastraTanque.x = entorno.mouseX();
-            searrastraTanque.y = entorno.mouseY();
-        }
-
-        if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
-            if (searrastraPlanta != null) {
-                if (colocarEnCasilla(searrastraPlanta)) {
-                    searrastraPlanta.seleccionada = false;
-                    searrastraPlanta = null;
-                }
-            } else if (searrastraTanque != null) {
-                if (colocarEnCasilla(searrastraTanque)) {
-                    searrastraTanque.seleccionada = false;
-                    searrastraTanque = null;
-                }
+        // Arrastrar el objeto seleccionado
+        if (objetoSeleccionado != null) {
+            if (objetoSeleccionado instanceof Planta) {
+                arrastrar((Planta) objetoSeleccionado);
+            } else if (objetoSeleccionado instanceof Tanque) {
+                arrastrarT((Tanque) objetoSeleccionado);
             }
         }
 
-        // ----------------- MODO MOVER CLICK DERECHO -----------------
+        // Soltar el objeto seleccionado
+        if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && objetoSeleccionado != null) {
+            if (objetoSeleccionado instanceof Planta) {
+                colocarEnCasilla((Planta) objetoSeleccionado);
+                ((Planta) objetoSeleccionado).seleccionada = false;
+            } else if (objetoSeleccionado instanceof Tanque) {
+                colocarEnCasilla((Tanque) objetoSeleccionado);
+                ((Tanque) objetoSeleccionado).seleccionada = false;
+            }
+            objetoSeleccionado = null;
+        }
+
         if (entorno.sePresionoBoton(entorno.BOTON_DERECHO)) {
             if (!modoMover) {
                 for (Planta p : RoseBlade) {
-                    if (p != null && p.estaEnTablero() && clickSobrePlanta(p)) {
+                    if (p != null && p.colocada && clickSobrePlanta(p)) {
                         plantaEnMovimiento = p;
                         modoMover = true;
                         return;
                     }
                 }
                 for (Tanque t : Tung) {
-                    if (t != null && t.estaEnTablero() && clickSobreTanque(t)) {
+                    if (t != null && t.colocada && clickSobreTanque(t)) {
                         tanqueEnMovimiento = t;
                         modoMover = true;
                         return;
@@ -308,7 +313,44 @@ public class Juego extends InterfaceJuego {
         }
     }
 
-    // --------------------- MÉTODOS AUXILIARES ---------------------
+    private boolean clickSobrePlanta(Planta p) {
+        double mx = entorno.mouseX();
+        double my = entorno.mouseY();
+        double ancho = 50;
+        double alto = 50;
+        return mx >= p.x - ancho / 2 && mx <= p.x + ancho / 2 && my >= p.y - alto / 2 && my <= p.y + alto / 2;
+    }
+
+    private boolean clickSobreTanque(Tanque t) {
+        double mx = entorno.mouseX();
+        double my = entorno.mouseY();
+        double ancho = 50;
+        double alto = 50;
+        return mx >= t.x - ancho / 2 && mx <= t.x + ancho / 2 && my >= t.y - alto / 2 && my <= t.y + alto / 2;
+    }
+
+    private void arrastrar(Planta rosa) {
+        rosa.x = entorno.mouseX();
+        rosa.y = entorno.mouseY();
+    }
+
+    private void arrastrarT(Tanque tung) {
+        tung.x = entorno.mouseX();
+        tung.y = entorno.mouseY();
+    }
+
+    private boolean seleccionada(Planta p) {
+        double cursorX = entorno.mouseX();
+        double cursorY = entorno.mouseY();
+        return cursorX > p.getBordeIzq() && cursorX < p.getBordeDer() && cursorY > p.getBordeSup() && cursorY < p.getBordeInf();
+    }
+
+    private boolean seleccionada(Tanque t) {
+        double cursorX = entorno.mouseX();
+        double cursorY = entorno.mouseY();
+        return cursorX > t.getBordeIzq() && cursorX < t.getBordeDer() && cursorY > t.getBordeSup() && cursorY < t.getBordeInf();
+    }
+
     private void dibujarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
@@ -317,197 +359,64 @@ public class Juego extends InterfaceJuego {
         }
     }
 
-    private boolean clickSobrePlanta(Planta p) {
+    // coloca la planta en un casillero disponible y lo centra
+    private void colocarEnCasilla(Planta p) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();
-        double ancho = 50;
-        double alto = 50;
-        return mx >= p.x - ancho / 2 && mx <= p.x + ancho / 2 &&
-               my >= p.y - alto / 2 && my <= p.y + alto / 2;
-    }
 
-    private boolean clickSobreTanque(Tanque t) {
-        double mx = entorno.mouseX();
-        double my = entorno.mouseY();
-        double ancho = 50;
-        double alto = 50;
-        return mx >= t.x - ancho / 2 && mx <= t.x + ancho / 2 &&
-               my >= t.y - alto / 2 && my <= t.y + alto / 2;
-    }
-
-<<<<<<< HEAD
-    private boolean colocarEnCasilla(Planta p) {
-        double mx = entorno.mouseX();
-        double my = entorno.mouseY();
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 Campo c = tablero[i][j];
-                if (mx >= c.getX() - anchoCasilla / 2 && mx <= c.getX() + anchoCasilla / 2 &&
-                    my >= c.getY() - altoCasilla / 2 && my <= c.getY() + altoCasilla / 2) {
+
+                double xMin = c.getX() - (anchoCasilla / 2);
+                double xMax = c.getX() + (anchoCasilla / 2);
+                double yMin = c.getY() - (altoCasilla / 2);
+                double yMax = c.getY() + (altoCasilla / 2);
+
+                if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
                     if (!c.estaOcupada()) {
                         p.x = c.getX();
                         p.y = c.getY();
                         c.ocupar();
-                        p.setEnTablero(true);
-                        return true;
+                        p.colocada = true;
+                        System.out.println("RoseBlade colocada en [" + i + "][" + j + "]");
                     }
-                    return false;
+                    return;
                 }
             }
         }
-        return false;
     }
-=======
-	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
-	                if (!c.estaOcupada()) {
-	                    p.x = c.getX();
-	                    p.y = c.getY();
-	                    c.ocupar();
-	                    p.colocada = true;
-	                    System.out.println("RoseBlade colocada en [" + i + "][" + j + "]");
-	                }
-	                return;
-	            }
-	        }
-	    }
-	}
-	//coloca al tanque en un casillero disponible y lo centra
-	private void colocarEnCasilla(Tanque t) {
-	    double mx = entorno.mouseX();
-	    double my = entorno.mouseY();
->>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
 
-    private boolean colocarEnCasilla(Tanque t) {
+    // coloca al tanque en un casillero disponible y lo centra
+    private void colocarEnCasilla(Tanque t) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();
+
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 Campo c = tablero[i][j];
-                if (mx >= c.getX() - anchoCasilla / 2 && mx <= c.getX() + anchoCasilla / 2 &&
-                    my >= c.getY() - altoCasilla / 2 && my <= c.getY() + altoCasilla / 2) {
+
+                double xMin = c.getX() - (anchoCasilla / 2);
+                double xMax = c.getX() + (anchoCasilla / 2);
+                double yMin = c.getY() - (altoCasilla / 2);
+                double yMax = c.getY() + (altoCasilla / 2);
+
+                if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
                     if (!c.estaOcupada()) {
                         t.x = c.getX();
                         t.y = c.getY();
+                        t.colocada = true;
                         c.ocupar();
-                        t.setEnTablero(true);
-                        return true;
+                        System.out.println("Tung colocado en [" + i + "][" + j + "]");
                     }
-                    return false;
+                    return;
                 }
             }
         }
-        return false;
-    }
-
-    // ----------------- MOVER CON FLECHAS -----------------
-    private void moverPlanta(Planta p) {
-        int filaActual = -1, colActual = -1;
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                if (tablero[i][j].getX() == p.x && tablero[i][j].getY() == p.y) {
-                    filaActual = i;
-                    colActual = j;
-                }
-            }
-        }
-        if (filaActual == -1) return;
-
-<<<<<<< HEAD
-        if (entorno.sePresiono(entorno.TECLA_ARRIBA) && filaActual > 0 &&
-            !tablero[filaActual-1][colActual].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            filaActual--;
-            colocarPlantaEnCasilla(p, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_ABAJO) && filaActual < filas-1 &&
-            !tablero[filaActual+1][colActual].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            filaActual++;
-            colocarPlantaEnCasilla(p, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && colActual > 0 &&
-            !tablero[filaActual][colActual-1].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            colActual--;
-            colocarPlantaEnCasilla(p, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_DERECHA) && colActual < columnas-1 &&
-            !tablero[filaActual][colActual+1].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            colActual++;
-            colocarPlantaEnCasilla(p, filaActual, colActual);
-        }
-    }
-=======
-	            if (mx >= xMin && mx <= xMax && my >= yMin && my <= yMax) {
-	                if (!c.estaOcupada()) {
-	                    t.x = c.getX();
-	                    t.y = c.getY();
-	                    t.colocada = true;
-	                    c.ocupar();
-	                    System.out.println("Tung colocado en [" + i + "][" + j + "]");
-	                }
-	                return;
-	            }
-	        }
-	    }
-	}
->>>>>>> a022d9e7f0143ea73083e436dbb950edb0b42081
-
-    private void colocarPlantaEnCasilla(Planta p, int fila, int col) {
-        Campo c = tablero[fila][col];
-        p.x = c.getX();
-        p.y = c.getY();
-        c.ocupar();
-    }
-
-    private void moverTanque(Tanque t) {
-        int filaActual = -1, colActual = -1;
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                if (tablero[i][j].getX() == t.x && tablero[i][j].getY() == t.y) {
-                    filaActual = i;
-                    colActual = j;
-                }
-            }
-        }
-        if (filaActual == -1) return;
-
-        if (entorno.sePresiono(entorno.TECLA_ARRIBA) && filaActual > 0 &&
-            !tablero[filaActual-1][colActual].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            filaActual--;
-            colocarTanqueEnCasilla(t, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_ABAJO) && filaActual < filas-1 &&
-            !tablero[filaActual+1][colActual].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            filaActual++;
-            colocarTanqueEnCasilla(t, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && colActual > 0 &&
-            !tablero[filaActual][colActual-1].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            colActual--;
-            colocarTanqueEnCasilla(t, filaActual, colActual);
-        }
-        if (entorno.sePresiono(entorno.TECLA_DERECHA) && colActual < columnas-1 &&
-            !tablero[filaActual][colActual+1].estaOcupada()) {
-            tablero[filaActual][colActual].liberar();
-            colActual++;
-            colocarTanqueEnCasilla(t, filaActual, colActual);
-        }
-    }
-
-    private void colocarTanqueEnCasilla(Tanque t, int fila, int col) {
-        Campo c = tablero[fila][col];
-        t.x = c.getX();
-        t.y = c.getY();
-        c.ocupar();
     }
 
     @SuppressWarnings("unused")
     public static void main(String[] args) {
-        new Juego();
+        Juego juego = new Juego();
     }
 }
