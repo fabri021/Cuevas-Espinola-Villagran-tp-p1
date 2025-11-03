@@ -27,7 +27,7 @@ public class Tanque {
 		this.escala = 0.08;
 		imgP = Herramientas.cargarImagen("TanqueSigma.jpeg");
 		this.seleccionada = false;
-		this.vida = 10;
+		this.vida = 200;
 		this.colocada = false;
 	}
 	

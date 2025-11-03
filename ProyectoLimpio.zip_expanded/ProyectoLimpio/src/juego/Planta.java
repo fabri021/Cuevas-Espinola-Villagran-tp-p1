@@ -47,25 +47,47 @@ public class Planta {
 	
 	//Creamos los bordes
 	public double getBordeIzq() {
-	    this.bordeIzq = x - imgP.getWidth(null)/2 * this.escala;
-	    return bordeIzq;
-	}
+	     this.bordeIzq = x - (imgP.getWidth(null) * this.escala / 2);
+	     return bordeIzq;
+	 }
+	 
+	 public void setBordeIzq(double bordeIzq) {
+	  this.bordeIzq = bordeIzq;
+	 }
 
-	public double getBordeDer() {
-	    this.bordeDer = x + imgP.getWidth(null)/2 * this.escala;
-	    return bordeDer;
-	}
+	 public double getBordeDer() {
+	     this.bordeDer = x + (imgP.getWidth(null) * this.escala / 2);
+	     return bordeDer;
+	 }
 
-	public double getBordeSup() {
-	    this.bordeSup = y - imgP.getHeight(null)/2 * this.escala;
-	    return bordeSup;
-	}
+	 public void setBordeDer(double bordeDer) {
+	  this.bordeDer = bordeDer;
+	 }
 
-	public double getBordeInf() {
-	    this.bordeInf = y + imgP.getHeight(null)/2 * this.escala;
-	    return bordeInf;
-	}
-	// getters y setters
+	 public double getBordeSup() {
+	     this.bordeSup = y - (imgP.getHeight(null) * this.escala / 2);
+	     return bordeSup;
+	 }
+
+	 public void setBordeSup(double bordeSup) {
+	  this.bordeSup = bordeSup;
+	 }
+
+	 public double getBordeInf() {
+	     this.bordeInf = y + (imgP.getHeight(null) * this.escala / 2);
+	     return bordeInf;
+	 }
+
+	 public void setBordeInf(double bordeInf) {
+	  this.bordeInf = bordeInf;
+	 }
+	 public double getX() {
+	     return x;  
+	 }
+
+	 public double getY() {
+	     return y;  
+	 }
 	public int getVida() {
 		return vida;
 	}

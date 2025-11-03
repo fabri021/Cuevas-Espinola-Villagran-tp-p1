@@ -13,6 +13,9 @@ public class Juego extends InterfaceJuego {
     Tanque iconT;
     Regalos gift;
     Zombies zom;
+    
+    private boolean juegoTerminado = false;  // Bandera para saber si el juego terminó
+    private String mensajeGameOver = "GAME OVER - Presiona ENTER para reiniciar";  // Mensaje a mostrar
     // arreglo para generar las plantas
     private Planta[] RoseBlade;
     private Tanque[] Tung;
@@ -242,16 +245,33 @@ public class Juego extends InterfaceJuego {
 
     private void movimientoZombie() {
         for (int i = 0; i < zomI; i++) {
-            if (zombie[i] != null) {  
-                zombie[i].x -= 3.5;              
+            if (zombie[i] != null && !(zombie[i]).detenido) {  
+            	zombie[i].x -= zombie[i].velocidad;                
             }
         }
     }
     
-    public boolean colision(double x1, double y1, double x2, double y2, double dist) {
-    	return (x1 - x2) * (x1 - x2) + (y1-y2) * (y1-y2) < dist*dist;
+    private boolean colisionaConRegalo(Zombies z, Regalos g) {
+        return !(z.getBordeDer() < g.getBordeIzq() ||
+                 z.getBordeIzq() > g.getBordeDer() ||
+                 z.getBordeSup() > g.getBordeInf() || 
+                 z.getBordeInf() < g.getBordeSup());
     }
     
+    public boolean colisionConPlanta(Zombies z, Planta p) {
+    	return !(z.getBordeDer() < p.getBordeIzq() ||
+    			 z.getBordeIzq() > p.getBordeDer() ||
+    			 z.getBordeSup() > p.getBordeInf() ||
+    			 z.getBordeInf() < p.getBordeSup());
+    }
+    
+    public boolean colisionConTanque(Zombies z, Tanque t) {
+    	return !(z.getBordeDer() < t.getBordeIzq() ||
+    			 z.getBordeIzq() > t.getBordeDer() ||
+    			 z.getBordeSup() > t.getBordeInf() ||
+    			 z.getBordeInf() < t.getBordeSup());
+    }
+      
     
 
     /**
@@ -267,14 +287,58 @@ public class Juego extends InterfaceJuego {
         dibujarTablero();
 
         for (int i = 0; i < filas; i++) {
-            regalosPorFila[i].dibujar(entorno);
+            if (regalosPorFila[i] != null) { 
+                regalosPorFila[i].dibujar(entorno);
+            }
         }
+        
+        
         
         for (int i = 0; i < zomI; i++) {
             if (zombie[i] != null) {
                 zombie[i].dibujar(entorno);
+
+                
+                for (int j = 0; j < filas; j++) {
+                    Regalos regalo = regalosPorFila[j];
+                    if (regalo != null && colisionaConRegalo(zombie[i], regalo)) {
+                        
+                        System.out.println("¡Colisión! Zombie ha tocado el regalo.");
+                        regalo.setVida(regalo.getVida() - 1);  
+                        if (regalo.getVida() <= 0) {
+                            regalosPorFila[j] = null;
+                            juegoTerminado = true;
+                        }
+                    }                
+                }
+                for (int p = 0; p < filas; p++) {
+                	Planta roseBlade = RoseBlade[p];
+                	if(roseBlade != null && colisionConPlanta(zombie[i], roseBlade)) {
+                		roseBlade.setVida(roseBlade.getVida() - 1);
+                		System.out.println("colision planta");
+                		zombie[i].detenido = true;               	                		
+                        if (roseBlade.getVida() <= 0) {
+                            	RoseBlade[p] = null;
+                            	zombie[i].detenido = false;
+                            }
+                		}
+                	}
+                for (int t = 0; t < filas; t++) {
+                	Tanque tanque = Tung[t];
+                	if(tanque != null && colisionConTanque(zombie[i], tanque)) {
+                		tanque.setVida(tanque.getVida() - 1);
+                		System.out.println("colision tanque");
+                		zombie[i].detenido = true;               	                		
+                        if (tanque.getVida() <= 0) {
+                            	Tung[t] = null;
+                            	zombie[i].detenido = false;
+                            }
+                		}
+                	}
+                }
             }
-        }
+       
+        
         // mostramos los iconos
         icon.dibujar(entorno);
         iconT.dibujar(entorno);
@@ -283,11 +347,6 @@ public class Juego extends InterfaceJuego {
         movimientoZombie();
         
         
-        for( Zombies z : zombie) {
-        	 if (colision(z.x, z.y, gift.x, gift.y, 10  )) {
-        		 System.out.println("El zombie devoro tu regalo :( !!!");
-        	 }
-        }
        
 
         // Dibujar plantas disponibles y manejar selección
@@ -366,6 +425,57 @@ public class Juego extends InterfaceJuego {
             if (plantaEnMovimiento != null) moverPlanta(plantaEnMovimiento);
             else if (tanqueEnMovimiento != null) moverTanque(tanqueEnMovimiento);
         }
+        
+        for (int i = 0; i < zomI; i++) {
+            if (zombie[i] != null && zombie[i].x < 0) {  
+                juegoTerminado = true;
+                break;  
+            }
+        }
+        if (juegoTerminado) {
+        	
+        	entorno.dibujarRectangulo(entorno.ancho() / 2 , entorno.alto() / 2, 1016, 610, 0, Color.BLACK);
+            entorno.cambiarFont("Arial", 30, Color.LIGHT_GRAY);  
+            entorno.escribirTexto(mensajeGameOver, entorno.ancho() / 2 - 300 , entorno.alto() / 2);
+            
+            if (entorno.sePresiono(entorno.TECLA_ENTER)) {  
+                reiniciarJuego();  
+            }
+            return; 
+        }
+    }
+    private void reiniciarJuego() {
+        
+        juegoTerminado = false;
+        contadorTicks = 0;
+        contadorTicksZ = 0;
+        roseI = 0;
+        tungI = 0;
+        zomI = 0;
+        
+        
+        for (int i = 0; i < RoseBlade.length; i++) {
+            RoseBlade[i] = null;
+        }
+        for (int i = 0; i < Tung.length; i++) {
+            Tung[i] = null;
+        }
+        for (int i = 0; i < zombie.length; i++) {
+            zombie[i] = null;
+        }
+        
+        
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                tablero[i][j].liberar();
+            }
+        }
+        
+     
+        inicializarRegalosPorFila();
+        
+       
+        System.out.println("Juego reiniciado");
     }
 
     private boolean clickSobrePlanta(Planta p) {
