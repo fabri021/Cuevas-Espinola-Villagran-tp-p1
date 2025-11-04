@@ -4,7 +4,7 @@ import java.awt.Color;
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 import java.util.Random;
-import java.awt.Image;
+
 
 public class Juego extends InterfaceJuego {
     // El objeto Entorno que controla el tiempo y otros

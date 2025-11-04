@@ -11,22 +11,15 @@ public class Planta {
 	private double bordeIzq, bordeDer, bordeSup,bordeInf;
 	Image imgP;
 	private int vida;
-	private int danio;
 	boolean seleccionada;
 	private boolean enTablero = false;
 	boolean colocada;
-
-	
-
-
-
 	
 	public Planta(double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.escala = 0.15;
 		imgP = Herramientas.cargarImagen("pd.png");
-		this.danio = 1;
 		this.seleccionada = false;
 		this.vida = 1;
 		this.colocada = false;
@@ -96,14 +89,6 @@ public class Planta {
 		this.vida = vida;
 	}
 
-	public int getDanio() {
-		return danio;
-	}
-
-	public void setDanio(int danio) {
-		this.danio = danio;
-	}
-	//boolean para seleccionar la planta en Juego
 	public boolean isSeleccionada() {
 		return seleccionada;
 	}
