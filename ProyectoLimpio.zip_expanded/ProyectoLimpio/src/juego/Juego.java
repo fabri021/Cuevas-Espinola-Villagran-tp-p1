@@ -77,9 +77,9 @@ public class Juego extends InterfaceJuego {
         gift = new Regalos(100.0, 100.0, 51.0, 51.0);
 
         this.entorno = new Entorno(this, "Proyecto para TP", 1000, 600);
-        RoseBlade = new Planta[10];
-        Tung = new Tanque[10];
-        zombie = new Zombies[10];
+        RoseBlade = new Planta[15];
+        Tung = new Tanque[15];
+        zombie = new Zombies[50];
         proyectiles = new Proyectiles[100];  
 
         
@@ -264,7 +264,7 @@ public class Juego extends InterfaceJuego {
     // GENERAMOS UN ZOMBIE EN EL ARRAY ZOMBIES CADA 300 TICKS EN UNA FILA ALEATORIA \\
     private void generarZombies() {
         contadorTicksZ++;
-        if (contadorTicksZ % 300 == 0 && zomI < zombie.length) {
+        if (contadorTicksZ % 200 == 0 && zomI < zombie.length) {
             int filaAleatoria = random.nextInt(filas);
             double x = tablero[filaAleatoria][columnas - 1].getX();
             double y = tablero[filaAleatoria][columnas - 1].getY();
@@ -335,17 +335,8 @@ public class Juego extends InterfaceJuego {
                  pr.getBordeInf() < z.getBordeSup());
     }
 
-    
-    
+        
       
-    
-
-    /**
-     * Durante el juego, el método tick() será ejecutado en cada instante y
-     * por lo tanto es el método más importante de esta clase. Aquí se debe
-     * actualizar el estado interno del juego para simular el paso del tiempo
-     * (ver el enunciado del TP para mayor detalle).
-     */
     public void tick() {
 
         // mostramos las casillas
@@ -414,7 +405,7 @@ public class Juego extends InterfaceJuego {
         	Planta p = RoseBlade[i];
         	if(p!= null && p.colocada) {
         		if(detectarZ(p)) {
-        			System.out.println("encontró zombie");
+        			
         		}
         	}
         }
@@ -585,8 +576,11 @@ public class Juego extends InterfaceJuego {
         roseI = 0;
         tungI = 0;
         zomI = 0;
+        proyI = 0;
         
-        
+        for (int i = 0; i < proyectiles.length; i++) {
+            proyectiles[i] = null;
+        }
         for (int i = 0; i < RoseBlade.length; i++) {
             RoseBlade[i] = null;
         }

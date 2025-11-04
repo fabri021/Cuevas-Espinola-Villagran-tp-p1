@@ -17,7 +17,7 @@ public class Zombies {
 	
 	public Zombies ( double x, double y) {
 		this.detenido = false;
-		this.velocidad = 3.5;
+		this.velocidad = 2.0;
 		this.x = x;
 		this.y = y; 
 		this.danio = 2;
