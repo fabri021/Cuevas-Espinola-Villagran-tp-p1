@@ -1,12 +1,15 @@
 package juego;
-import java.awt.Color;
+
 import entorno.Entorno;
+import java.awt.Image;
+import entorno.Herramientas;
 
 public class Campo {
     private double x, y;     // posición del centro de la casilla
     private double ancho, alto;
     private boolean ocupada;
     private boolean bloqueadoRegalo; //bloquear las casillas de los regalos
+    Image c;
 
     public Campo(double x, double y, double ancho, double alto) {
         this.x = x;
@@ -14,12 +17,14 @@ public class Campo {
         this.ancho = ancho;
         this.alto = alto;
         this.ocupada = false;
+        c = Herramientas.cargarImagen("tablero.png");
+        
     }
 
-    public void dibujar(Entorno e) {
-        e.dibujarRectangulo(x, y, ancho, alto, 0, Color.GREEN);
+    public void dibujar(Entorno t) {
+    	t.dibujarImagen(c, 500, 351, 0, 1);
     }
-
+   
     public boolean estaOcupada() {
         return ocupada || bloqueadoRegalo;
     }

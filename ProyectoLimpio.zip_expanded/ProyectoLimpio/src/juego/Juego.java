@@ -32,6 +32,9 @@ public class Juego extends InterfaceJuego {
     //Contadores de ticks para generación de plantas y zombies
     private int contadorTicks = 0;
     private int contadorTicksZ = 0;
+    private int contadorTicksProyectil = 0;
+
+
     // indices para recorrer los arreglos
     private int roseI = 0;
     private int tungI = 0;
@@ -45,11 +48,14 @@ public class Juego extends InterfaceJuego {
     private Campo[][] tablero;
     private int filas = 5;
     private int columnas = 10;
-    private double anchoCasilla = 102;
-    private double altoCasilla = 102;
-    private double margenX = 51;
-    private double margenY = 151;
+    private double anchoCasilla = 100;
+    private double altoCasilla = 100;
+    private double margenX = 50;
+    private double margenY = 150;
     
+    private Proyectiles[] proyectiles;  
+    private int proyI = 0;              
+
     //Arreglo para generar Regalos
     private Regalos[] regalosPorFila;
     
@@ -70,21 +76,21 @@ public class Juego extends InterfaceJuego {
         iconT = new Tanque(200.0, 50.0);
         gift = new Regalos(100.0, 100.0, 51.0, 51.0);
 
-        this.entorno = new Entorno(this, "Proyecto para TP", 1016, 610);
+        this.entorno = new Entorno(this, "Proyecto para TP", 1000, 600);
         RoseBlade = new Planta[10];
         Tung = new Tanque[10];
         zombie = new Zombies[10];
+        proyectiles = new Proyectiles[100];  
+
         
         inicializarTablero();
         inicializarRegalosPorFila();
 
-        // Inicializar lo que haga falta para el juego
-        // ...
-
-        // Inicia el juego!
+      
         this.entorno.iniciar();
     }
 
+    // METODOS PARA MOVER LAS PLANTAS CON LAS FLECHAS DIRECCIONALES, SOLO SI LA CASILLA ESTA LIBRE
     private void moverPlanta(Planta p) {
         int filaActual = -1, colActual = -1;
         for (int i = 0; i < filas; i++) {
@@ -162,7 +168,9 @@ public class Juego extends InterfaceJuego {
             	colocarTanqueEnCasilla(t, filaActual, colActual);
         }
     }
-
+    
+    // METODO PARA COLOCAR LAS PLANTAS Y LOS TANQUE EN LAS CASILLAS SELECCIONADAS CON LOS METODOS DE MOVER (planta y tanque)
+    // METODOS PARA COLOCAR PLANTAS Y TANQ
     private void colocarPlantaEnCasilla(Planta p, int fila, int col) {
         Campo c = tablero[fila][col];
         p.x = c.getX();
@@ -176,11 +184,13 @@ public class Juego extends InterfaceJuego {
         t.y = c.getY();
         c.ocupar();
     }
-
+    
+    // METODOS PARA VERIFICAR SI YA HAY UNA PLANTA O TANQUE DISPONIBLE PARA SER COLOCADA EN EL TABLERO
+    // METODOS PARA DETECTAR SI HAY TANQUE O PLANTAS DISPONIBLES PARA SER SELECCIONADOS \\
     private boolean hayPlantaDisponible() {
         for (int i = 0; i < roseI; i++) {
             if (RoseBlade[i] != null && !RoseBlade[i].colocada) {
-                return true; // Hay al menos una planta generada y no colocada
+                return true; 
             }
         }
         return false;
@@ -195,10 +205,12 @@ public class Juego extends InterfaceJuego {
         return false;
     }
 
+    // GENERAMOS LAS PLANTA Y TANQUE, CADA 300 TICKS, EN LOS ARREGLOS 
+    // CREAMOS LAS PLANTAS EN EL ARRAY RoseBlade[] \\
     private void generarPlantas() {
         contadorTicks++;
 
-        // Cada 300 ticks, agregamos una nueva planta si queda lugar
+       
         if (contadorTicks % 300 == 0) {
 
             if (!hayPlantaDisponible() && roseI < RoseBlade.length) {
@@ -208,6 +220,7 @@ public class Juego extends InterfaceJuego {
                 RoseBlade[roseI] = new Planta(y, x);
                 roseI++;
                 System.out.println("RoseBlade está disponible");
+                
             }
 
             if (!hayTanqueDisponible() && tungI < Tung.length) {
@@ -220,18 +233,22 @@ public class Juego extends InterfaceJuego {
 
         }
     }
-
+    
+    // GENERAMOS LAS CASILLAS DEL TABLERO
+    // CREAMOS EL TABLERO Y LAS CASILLAS \\
     private void inicializarTablero() {
         tablero = new Campo[filas][columnas];
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 double x = margenX + j * anchoCasilla;
                 double y = margenY + i * altoCasilla;
-                tablero[i][j] = new Campo(x, y, anchoCasilla - 2, altoCasilla - 2);
+                tablero[i][j] = new Campo(x, y, anchoCasilla , altoCasilla );
             }
         }
     }
 
+    // GENERAMOS LOS REGALOS EN LA PRIMER COLUMNA DEL TABLERO
+    // GENERAMOS LOS REGALOS EN LA PRIMER COLUMNA DEL TABLERO \\
     private void inicializarRegalosPorFila() {
         regalosPorFila = new Regalos[filas];
         for (int i = 0; i < filas; i++) {
@@ -243,6 +260,8 @@ public class Juego extends InterfaceJuego {
         }
     }
     
+    // GENERAMOS UN ZOMBIE EN EL ARRAY ZOMBIES[] CADA 300 TICKS EN UNA FILA ALEATORIA AFUERA DEL ENTORNO
+    // GENERAMOS UN ZOMBIE EN EL ARRAY ZOMBIES CADA 300 TICKS EN UNA FILA ALEATORIA \\
     private void generarZombies() {
         contadorTicksZ++;
         if (contadorTicksZ % 300 == 0 && zomI < zombie.length) {
@@ -255,6 +274,8 @@ public class Juego extends InterfaceJuego {
         }
     }
 
+    // INDICAMOS EL MOVIMIENTO DEL ZOMBIE POR LA FILA
+    // METODO PARA INDICAR EL MOVIMIENTO DEL ZOMBIE \\
     private void movimientoZombie() {
         for (int i = 0; i < zomI; i++) {
             if (zombie[i] != null && !(zombie[i]).detenido) {  
@@ -263,6 +284,29 @@ public class Juego extends InterfaceJuego {
         }
     }
     
+    // METODO PARA QUE ROSEBLADE DETECTE SI HAY ZOMBIES EN SU FILA
+    // METODO PARA QUE ROSEBLADE DETECTE SI HAY UN ZOMBIE EN SU FILA \\
+    private boolean detectarZ(Planta p) {
+    	int filaplanta = (int) ((p.y - margenY) / altoCasilla);
+    	if (filaplanta < 0 || filaplanta >= filas) {
+    		return false;  
+    	}
+
+    	for (int i = 0; i < zomI; i++) {
+    		Zombies z = zombie[i];
+    		if (z != null) {
+
+    			int filaZombie = (int) ((z.getY() - margenY) / altoCasilla);
+    			if (filaZombie == filaplanta) {
+    				return true;  
+    			}
+    		}
+    	}
+    	return false;  
+    }
+
+    // METODOS PARA LAS COLISIONES
+    // METODOS DE COLISIONES \\
     private boolean colisionaConRegalo(Zombies z, Regalos g) {
         return !(z.getBordeDer() < g.getBordeIzq() ||
                  z.getBordeIzq() > g.getBordeDer() ||
@@ -283,6 +327,16 @@ public class Juego extends InterfaceJuego {
     			 z.getBordeSup() > t.getBordeInf() ||
     			 z.getBordeInf() < t.getBordeSup());
     }
+    
+    private boolean colisionConProyectil(Proyectiles pr, Zombies z) {
+        return !(pr.getBordeDer() < z.getBordeIzq() ||
+                 pr.getBordeIzq() > z.getBordeDer() ||
+                 pr.getBordeSup() > z.getBordeInf() ||
+                 pr.getBordeInf() < z.getBordeSup());
+    }
+
+    
+    
       
     
 
@@ -295,8 +349,15 @@ public class Juego extends InterfaceJuego {
     public void tick() {
 
         // mostramos las casillas
-        entorno.colorFondo(new Color(0, 120, 0)); // Césped
+        
         dibujarTablero();
+        // mostramos los iconos
+        iconP.dibujar(entorno);
+        iconT.dibujar(entorno);
+        // generamos zombies, plantas y el movimiento
+        generarPlantas();
+        generarZombies();
+        movimientoZombie();
 
         for (int i = 0; i < filas; i++) {
             if (regalosPorFila[i] != null) { 
@@ -349,19 +410,23 @@ public class Juego extends InterfaceJuego {
                 	}
                 }
             }
+        for (int i = 0; i<roseI;i++) {
+        	Planta p = RoseBlade[i];
+        	if(p!= null && p.colocada) {
+        		if(detectarZ(p)) {
+        			System.out.println("encontró zombie");
+        		}
+        	}
+        }
        
         
-        // mostramos los iconos
-        iconP.dibujar(entorno);
-        iconT.dibujar(entorno);
-        generarPlantas();
-        generarZombies();
-        movimientoZombie();
+        
         
         
        
 
         // Dibujar plantas disponibles y manejar selección
+       
         for (int i = 0; i < roseI; i++) {
             Planta planta = RoseBlade[i];
             if (planta != null) {
@@ -375,6 +440,60 @@ public class Juego extends InterfaceJuego {
                 }
             }
         }
+        for (int i = 0; i < proyI; i++) {
+            Proyectiles pr = proyectiles[i];
+            if (pr != null) {
+                // mover el proyectil hacia la derecha
+                pr.setX(pr.getX() + pr.getVelocidad());
+                pr.dibujar(entorno);
+
+                // verificar colisión con zombies
+                for (int j = 0; j < zomI; j++) {
+                    Zombies z = zombie[j];
+                    if (z != null && colisionConProyectil(pr, z)) {
+                        z.setVida(z.getVida() - pr.getDanio());
+                        pr.setImpacto(true);  // marcar proyectil para borrar
+
+                        if (z.getVida() <= 0) {
+                            zombie[j] = null;  // eliminar zombie si muere
+                        }
+                        break; // dejamos de revisar más zombies para este proyectil
+                    }
+                }
+
+                // eliminar proyectil si impactó o salió del tablero
+                if (pr.isImpacto() || pr.getX() > entorno.ancho()) {
+                    proyectiles[i] = null;
+                }
+            }
+        }
+
+        // compactar el arreglo (sacar los null)
+        int nuevoProyI = 0;
+        for (int i = 0; i < proyI; i++) {
+            if (proyectiles[i] != null) {
+                proyectiles[nuevoProyI] = proyectiles[i];
+                nuevoProyI++;
+            }
+        }
+        proyI = nuevoProyI;
+
+        contadorTicksProyectil++;
+        if (contadorTicksProyectil >= 60) {
+            for (int i = 0; i < roseI; i++) {
+                Planta p = RoseBlade[i];
+                if (p != null && p.colocada) {
+                    if (detectarZ(p)) {
+                        if (proyI < proyectiles.length) {
+                            proyectiles[proyI] = new Proyectiles(6.0, 1, false, p.x + 25, p.y);
+                            proyI++;
+                        }
+                    }
+                }
+            }
+            contadorTicksProyectil = 0; 
+        }
+
 
         // Dibujar tanques disponibles y manejar selección
         for (int i = 0; i < tungI; i++) {
@@ -456,6 +575,8 @@ public class Juego extends InterfaceJuego {
             return; 
         }
     }
+    
+    // REICNICIAMOS CONTADORES Y ARREGLOS PARA VOLVER A JUGAR
     private void reiniciarJuego() {
         
         juegoTerminado = false;
@@ -490,6 +611,7 @@ public class Juego extends InterfaceJuego {
         System.out.println("Juego reiniciado");
     }
 
+    // DETECTA SI EL MOUSE ESTA SOBRE LA PLANTA O EL TANQUE PARA SER SELECCIONADA
     private boolean clickSobrePlanta(Planta p) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();
@@ -506,6 +628,7 @@ public class Juego extends InterfaceJuego {
         return mx >= t.x - ancho / 2 && mx <= t.x + ancho / 2 && my >= t.y - alto / 2 && my <= t.y + alto / 2;
     }
 
+    // METODOS DE ARRASTRE DE PLANTA Y TANQUE PARA PODER COLOCARLAR EN UNA CASILLA
     private void arrastrar(Planta rosa) {
         rosa.x = entorno.mouseX();
         rosa.y = entorno.mouseY();
@@ -516,6 +639,7 @@ public class Juego extends InterfaceJuego {
         tung.y = entorno.mouseY();
     }
 
+    // COMPARADORES PARA HACER SELECCION UNICA
     private boolean seleccionada(Planta p) {
         double cursorX = entorno.mouseX();
         double cursorY = entorno.mouseY();
@@ -528,6 +652,7 @@ public class Juego extends InterfaceJuego {
         return cursorX > t.getBordeIzq() && cursorX < t.getBordeDer() && cursorY > t.getBordeSup() && cursorY < t.getBordeInf();
     }
 
+    // DIBUJAMOS EL TABLERO
     private void dibujarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
@@ -536,7 +661,7 @@ public class Juego extends InterfaceJuego {
         }
     }
 
-    // coloca la planta en un casillero disponible y lo centra
+    // CENTRA LA PLANTA Y EL TANQUE EN UN CASILLERO SELECCIONADO
     private void colocarEnCasilla(Planta p) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();
@@ -564,7 +689,7 @@ public class Juego extends InterfaceJuego {
         }
     }
 
-    // coloca al tanque en un casillero disponible y lo centra
+    
     private void colocarEnCasilla(Tanque t) {
         double mx = entorno.mouseX();
         double my = entorno.mouseY();

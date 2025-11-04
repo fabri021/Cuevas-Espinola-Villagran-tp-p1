@@ -17,7 +17,7 @@ public class Proyectiles {
 		this.escala = 0.5;
 		this.x = x;
 		this.y = y;
-		this.velocidad = 1.0;
+		this.velocidad = 5.0;
 		this.impacto = false;
 		this.danio = 1;
 		prImg = Herramientas.cargarImagen("bolaFuego.png");

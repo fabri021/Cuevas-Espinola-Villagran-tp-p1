@@ -14,6 +14,7 @@ public class Planta {
 	boolean seleccionada;
 	private boolean enTablero = false;
 	boolean colocada;
+	private int contadorDisparo = 0;  
 	
 	public Planta(double x, double y) {
 		this.x = x;
@@ -95,6 +96,13 @@ public class Planta {
 
 	public void setSeleccionada(boolean seleccionada) {
 		this.seleccionada = seleccionada;
+	}
+	public int getContadorDisparo() {
+	    return contadorDisparo;
+	}
+
+	public void setContadorDisparo(int contadorDisparo) {
+	    this.contadorDisparo = contadorDisparo;
 	}
 
 

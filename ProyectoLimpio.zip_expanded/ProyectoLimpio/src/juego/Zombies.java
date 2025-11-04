@@ -8,7 +8,7 @@ import entorno.Herramientas;
 public class Zombies {
 	
 	boolean detenido;
-	private int vida;
+	private double vida;
 	private int danio;
 	double x , y , escala;
 	double velocidad;
@@ -49,11 +49,11 @@ public class Zombies {
 	}
 
 
-	public int getVida() {
+	public double getVida() {
 		return vida;
 	}
 
-	public void setVida(int vida) {
+	public void setVida(double vida) {
 		this.vida = vida;
 	}
 
