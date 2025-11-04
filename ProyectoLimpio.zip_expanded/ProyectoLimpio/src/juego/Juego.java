@@ -170,7 +170,7 @@ public class Juego extends InterfaceJuego {
     }
     
     // METODO PARA COLOCAR LAS PLANTAS Y LOS TANQUE EN LAS CASILLAS SELECCIONADAS CON LOS METODOS DE MOVER (planta y tanque)
-    // METODOS PARA COLOCAR PLANTAS Y TANQ
+    
     private void colocarPlantaEnCasilla(Planta p, int fila, int col) {
         Campo c = tablero[fila][col];
         p.x = c.getX();
@@ -186,7 +186,7 @@ public class Juego extends InterfaceJuego {
     }
     
     // METODOS PARA VERIFICAR SI YA HAY UNA PLANTA O TANQUE DISPONIBLE PARA SER COLOCADA EN EL TABLERO
-    // METODOS PARA DETECTAR SI HAY TANQUE O PLANTAS DISPONIBLES PARA SER SELECCIONADOS \\
+   
     private boolean hayPlantaDisponible() {
         for (int i = 0; i < roseI; i++) {
             if (RoseBlade[i] != null && !RoseBlade[i].colocada) {
@@ -206,7 +206,7 @@ public class Juego extends InterfaceJuego {
     }
 
     // GENERAMOS LAS PLANTA Y TANQUE, CADA 300 TICKS, EN LOS ARREGLOS 
-    // CREAMOS LAS PLANTAS EN EL ARRAY RoseBlade[] \\
+   
     private void generarPlantas() {
         contadorTicks++;
 
@@ -235,7 +235,7 @@ public class Juego extends InterfaceJuego {
     }
     
     // GENERAMOS LAS CASILLAS DEL TABLERO
-    // CREAMOS EL TABLERO Y LAS CASILLAS \\
+   
     private void inicializarTablero() {
         tablero = new Campo[filas][columnas];
         for (int i = 0; i < filas; i++) {
@@ -248,7 +248,7 @@ public class Juego extends InterfaceJuego {
     }
 
     // GENERAMOS LOS REGALOS EN LA PRIMER COLUMNA DEL TABLERO
-    // GENERAMOS LOS REGALOS EN LA PRIMER COLUMNA DEL TABLERO \\
+    
     private void inicializarRegalosPorFila() {
         regalosPorFila = new Regalos[filas];
         for (int i = 0; i < filas; i++) {
@@ -261,7 +261,7 @@ public class Juego extends InterfaceJuego {
     }
     
     // GENERAMOS UN ZOMBIE EN EL ARRAY ZOMBIES[] CADA 300 TICKS EN UNA FILA ALEATORIA AFUERA DEL ENTORNO
-    // GENERAMOS UN ZOMBIE EN EL ARRAY ZOMBIES CADA 300 TICKS EN UNA FILA ALEATORIA \\
+    
     private void generarZombies() {
         contadorTicksZ++;
         if (contadorTicksZ % 200 == 0 && zomI < zombie.length) {
@@ -275,7 +275,7 @@ public class Juego extends InterfaceJuego {
     }
 
     // INDICAMOS EL MOVIMIENTO DEL ZOMBIE POR LA FILA
-    // METODO PARA INDICAR EL MOVIMIENTO DEL ZOMBIE \\
+   
     private void movimientoZombie() {
         for (int i = 0; i < zomI; i++) {
             if (zombie[i] != null && !(zombie[i]).detenido) {  
@@ -285,7 +285,7 @@ public class Juego extends InterfaceJuego {
     }
     
     // METODO PARA QUE ROSEBLADE DETECTE SI HAY ZOMBIES EN SU FILA
-    // METODO PARA QUE ROSEBLADE DETECTE SI HAY UN ZOMBIE EN SU FILA \\
+    
     private boolean detectarZ(Planta p) {
     	int filaplanta = (int) ((p.y - margenY) / altoCasilla);
     	if (filaplanta < 0 || filaplanta >= filas) {
@@ -306,7 +306,6 @@ public class Juego extends InterfaceJuego {
     }
 
     // METODOS PARA LAS COLISIONES
-    // METODOS DE COLISIONES \\
     private boolean colisionaConRegalo(Zombies z, Regalos g) {
         return !(z.getBordeDer() < g.getBordeIzq() ||
                  z.getBordeIzq() > g.getBordeDer() ||
@@ -416,14 +415,14 @@ public class Juego extends InterfaceJuego {
         
        
 
-        // Dibujar plantas disponibles y manejar selección
+        
        
         for (int i = 0; i < roseI; i++) {
             Planta planta = RoseBlade[i];
             if (planta != null) {
                 planta.dibujar(entorno);
                 
-                // Detectar selección solo si no hay nada seleccionado
+                
                 if (objetoSeleccionado == null && !planta.colocada &&
                     entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && seleccionada(planta)) {
                     objetoSeleccionado = planta;
@@ -434,7 +433,6 @@ public class Juego extends InterfaceJuego {
         for (int i = 0; i < proyI; i++) {
             Proyectiles pr = proyectiles[i];
             if (pr != null) {
-                // mover el proyectil hacia la derecha
                 pr.setX(pr.getX() + pr.getVelocidad());
                 pr.dibujar(entorno);
 
@@ -443,23 +441,23 @@ public class Juego extends InterfaceJuego {
                     Zombies z = zombie[j];
                     if (z != null && colisionConProyectil(pr, z)) {
                         z.setVida(z.getVida() - pr.getDanio());
-                        pr.setImpacto(true);  // marcar proyectil para borrar
+                        pr.setImpacto(true); 
 
                         if (z.getVida() <= 0) {
-                            zombie[j] = null;  // eliminar zombie si muere
+                            zombie[j] = null; 
                         }
-                        break; // dejamos de revisar más zombies para este proyectil
+                        break; 
                     }
                 }
 
-                // eliminar proyectil si impactó o salió del tablero
+               
                 if (pr.isImpacto() || pr.getX() > entorno.ancho()) {
                     proyectiles[i] = null;
                 }
             }
         }
 
-        // compactar el arreglo (sacar los null)
+        
         int nuevoProyI = 0;
         for (int i = 0; i < proyI; i++) {
             if (proyectiles[i] != null) {

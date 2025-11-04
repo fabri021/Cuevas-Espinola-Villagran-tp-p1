@@ -24,8 +24,8 @@ public class Tanque {
 	public Tanque(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.escala = 0.08;
-		imgP = Herramientas.cargarImagen("TanqueSigma.jpeg");
+		this.escala = 0.12;
+		imgP = Herramientas.cargarImagen("TanqueSigma.png");
 		this.seleccionada = false;
 		this.vida = 200;
 		this.colocada = false;
