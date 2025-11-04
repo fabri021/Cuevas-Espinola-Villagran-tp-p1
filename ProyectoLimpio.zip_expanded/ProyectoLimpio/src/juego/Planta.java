@@ -10,6 +10,7 @@ public class Planta {
 	double x, y, escala;
 	private double bordeIzq, bordeDer, bordeSup,bordeInf;
 	Image imgP;
+	Image RosaI;
 	private int vida;
 	boolean seleccionada;
 	private boolean enTablero = false;
@@ -21,13 +22,16 @@ public class Planta {
 		this.y = y;
 		this.escala = 0.15;
 		imgP = Herramientas.cargarImagen("pd.png");
+		RosaI= Herramientas.cargarImagen("Rosaicono.png");
 		this.seleccionada = false;
 		this.vida = 1;
 		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {
+		entorno.dibujarImagen(RosaI, 50, 50, 0,this.escala);
 		entorno.dibujarImagen(imgP, this.x, this.y, 0, this.escala);
+		
 	}
 	
 	

@@ -11,6 +11,7 @@ public class Tanque {
 	double x, y, escala;
 	private double bordeIzq, bordeDer, bordeSup,bordeInf;
 	Image imgP;
+	Image iconT;
 	private int vida;
 	boolean seleccionada;
 	private boolean enTablero = false;
@@ -24,15 +25,18 @@ public class Tanque {
 	public Tanque(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.escala = 0.12;
+		this.escala = 0.14;
 		imgP = Herramientas.cargarImagen("TanqueSigma.png");
+		iconT= Herramientas.cargarImagen("Iconotanque.png");
 		this.seleccionada = false;
 		this.vida = 200;
 		this.colocada = false;
 	}
 	
 	public void dibujar (Entorno entorno) {
+		entorno.dibujarImagen(iconT, 175, 50, 0,this.escala);
 		entorno.dibujarImagen(imgP, this.x, this.y, 0, this.escala);
+		
 	}
 	//creamos los bordes
 	public double getBordeIzq() {

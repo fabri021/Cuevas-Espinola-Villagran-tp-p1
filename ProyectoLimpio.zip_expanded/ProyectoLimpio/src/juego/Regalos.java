@@ -19,9 +19,9 @@ public class Regalos {
 		this.ancho = ancho;
 		this.x=x;
 		this.y=y;
-		this.escala = 0.1;
+		this.escala = 1;
 		this.setVida(1);
-		gift = Herramientas.cargarImagen("gift.jpg");
+		gift = Herramientas.cargarImagen("gift.png");
 		
 	}
 	
