@@ -13,9 +13,11 @@ public class Juego extends InterfaceJuego {
 	Tanque iconT;
     Planta iconP;
     
-    
+
     Regalos gift;
     Zombies zom;
+    Proyectiles proyectil;
+    
     
     private boolean juegoTerminado = false;  // Bandera para saber si el juego terminó
     private String mensajeGameOver = "GAME OVER - Presiona ENTER para reiniciar";  // Mensaje a mostrar
@@ -71,8 +73,8 @@ public class Juego extends InterfaceJuego {
         this.entorno = new Entorno(this, "Proyecto para TP", 1016, 610);
         RoseBlade = new Planta[10];
         Tung = new Tanque[10];
-        zombie = new Zombies[10]; // O el tamaño que prefieras
-
+        zombie = new Zombies[10];
+        
         inicializarTablero();
         inicializarRegalosPorFila();
 
