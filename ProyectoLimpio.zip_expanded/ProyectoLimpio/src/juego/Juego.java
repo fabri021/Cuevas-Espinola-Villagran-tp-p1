@@ -4,13 +4,16 @@ import java.awt.Color;
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 import java.util.Random;
-
+import java.awt.Image;
 
 public class Juego extends InterfaceJuego {
     // El objeto Entorno que controla el tiempo y otros
 	
-    Planta icon;
-    Tanque iconT;
+	//iconos del HUD
+	Tanque iconT;
+    Planta iconP;
+    
+    
     Regalos gift;
     Zombies zom;
     
@@ -20,19 +23,23 @@ public class Juego extends InterfaceJuego {
     private Planta[] RoseBlade;
     private Tanque[] Tung;
     
+    //Arreglo para generar zombies y su indice
     private Zombies[] zombie;
     private int zomI = 0;
     
-    
+    //Contadores de ticks para generación de plantas y zombies
     private int contadorTicks = 0;
     private int contadorTicksZ = 0;
     // indices para recorrer los arreglos
     private int roseI = 0;
     private int tungI = 0;
+    
     //random para aparicion zombies
     private Random random = new Random();
 
     private Entorno entorno;
+    
+    //generacion del Campo
     private Campo[][] tablero;
     private int filas = 5;
     private int columnas = 10;
@@ -40,21 +47,24 @@ public class Juego extends InterfaceJuego {
     private double altoCasilla = 102;
     private double margenX = 51;
     private double margenY = 151;
+    
+    //Arreglo para generar Regalos
     private Regalos[] regalosPorFila;
+    
+    //variable para poder mover las plantas
     boolean modoMover = false;
     private Planta plantaEnMovimiento = null;
     private Tanque tanqueEnMovimiento = null;
     // Nueva variable para manejar selección única
     private Object objetoSeleccionado = null;
-    // llamamos la clase planta
+    
 
-    // Variables y métodos propios de cada grupo
-    // ...
+    
 
     Juego() {
         // Inicializa el objeto entorno
 
-        icon = new Planta(50.0, 50.0);
+        iconP = new Planta(50.0, 50.0);
         iconT = new Tanque(200.0, 50.0);
         gift = new Regalos(100.0, 100.0, 51.0, 51.0);
 
@@ -340,7 +350,7 @@ public class Juego extends InterfaceJuego {
        
         
         // mostramos los iconos
-        icon.dibujar(entorno);
+        iconP.dibujar(entorno);
         iconT.dibujar(entorno);
         generarPlantas();
         generarZombies();
