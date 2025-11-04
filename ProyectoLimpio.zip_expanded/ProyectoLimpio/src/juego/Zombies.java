@@ -22,8 +22,8 @@ public class Zombies {
 		this.y = y; 
 		this.danio = 2;
 		this.vida  = 4;
-		this.escala = 0.1;
-		imgz = Herramientas.cargarImagen("zombies1.jpg");
+		this.escala = 0.15;
+		imgz = Herramientas.cargarImagen("zombies1.png");
 	}
 	
 	
