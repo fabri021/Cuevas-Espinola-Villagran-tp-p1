@@ -582,7 +582,7 @@ public class Juego extends InterfaceJuego {
             }
         }
         entorno.cambiarFont("Arial", 20, Color.WHITE);
-        entorno.escribirTexto("Zombies derrotados: " + zombiesDerrotados, entorno.ancho() - 200, 50);
+        entorno.escribirTexto("Zombies derrotados: " + zombiesDerrotados, entorno.ancho() - 250, 55);
         if (juegoTerminado) {
         	
         	entorno.dibujarRectangulo(entorno.ancho() / 2 , entorno.alto() / 2, 1016, 610, 0, Color.BLACK);
