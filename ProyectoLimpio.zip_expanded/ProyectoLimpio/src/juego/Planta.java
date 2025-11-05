@@ -13,7 +13,6 @@ public class Planta {
 	Image RosaI;
 	private int vida;
 	boolean seleccionada;
-	private boolean enTablero = false;
 	boolean colocada;
 	private int contadorDisparo = 0;  
 	
@@ -35,12 +34,7 @@ public class Planta {
 	}
 	
 	
-	public boolean estaEnTablero() { 
-		return enTablero; 
-		}
-	public void setEnTablero(boolean b) { 
-		enTablero = b; 
-		}
+	
 	
 	
 	//Creamos los bordes
